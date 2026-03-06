@@ -41,7 +41,7 @@ app.use(
         ? ["https://votre-domaine.com"]
         : ["http://localhost:8000", "http://localhost:8001"],
     credentials: true,
-  })
+  }),
 );
 
 // Middleware de logging
@@ -59,7 +59,7 @@ app.use(
     customCss: ".swagger-ui .topbar { display: none }",
     customSiteTitle: "API Gestionnaire de Projets - Documentation",
     customfavIcon: "/favicon.ico",
-  })
+  }),
 );
 
 // Routes
@@ -137,7 +137,7 @@ app.use(
     error: any,
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction
+    next: express.NextFunction,
   ) => {
     console.error("Erreur serveur:", error);
 
@@ -149,7 +149,7 @@ app.use(
           ? error.message
           : "Internal server error",
     });
-  }
+  },
 );
 
 // Fonction pour démarrer le serveur

@@ -1,0 +1,51 @@
+    @reference "tailwindcss";
+
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 80px;
+        min-height: 80px;
+        z-index: 9999;
+
+
+        @media (max-width: 1024px) {
+            height: 56px;
+            min-height: 56px;
+        }
+
+    }
+
+    .navbar {
+        background-color: inherit;
+        height: 100%;
+        padding: 0 150px;
+        min-height: unset;
+        gap: 61px;
+
+        .navItem {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--color-primary);
+            color: var(--color-primary-content);
+        }
+
+        .navbarStart,
+        .navbarCenter,
+        .navbarEnd {
+            @media (min-width: 1025px) {
+                width: auto;
+            }
+
+            >.menu {
+                padding: 0;
+
+                @media (max-width: 1024px) {
+                    display: none;
+                }
+            }
+        }
+
+    }
