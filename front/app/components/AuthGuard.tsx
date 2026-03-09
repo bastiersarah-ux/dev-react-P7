@@ -18,12 +18,12 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const isAuthPage = pathname?.startsWith("/auth");
 
   useEffect(() => {
-    if (isAuthPage) return;
+    if (isAuthPage || isLoading) return;
 
     if (!isAuthenticated) {
       logout();
     }
-  }, [pathname, router]);
+  }, [pathname, router, isAuthenticated, isLoading]);
 
   if (isLoading || (!isAuthenticated && !isAuthPage))
     return (

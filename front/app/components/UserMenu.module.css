@@ -12,6 +12,8 @@
     background: var(--color-secondary);
     color: var(--color-secondary-content);
 
+
+
     &.userIconVariant {
         background: var(--color-primary);
         color: var(--color-primary-content);

@@ -1,3 +1,4 @@
+import { TOKEN_KEY } from "@front/context/AuthContext";
 import { SuccessResponse } from "@front/types/auth";
 
 export const API_URL = "http://localhost:8000";
@@ -6,7 +7,7 @@ export async function fetchAPI<T = any>(
   path: string,
   options: RequestInit = {},
 ): Promise<T | undefined> {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem(TOKEN_KEY);
 
   const res = await fetch(`${API_URL}${path}`, {
     ...options,

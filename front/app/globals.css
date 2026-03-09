@@ -64,6 +64,10 @@ body {
     font-size: 14px;
   }
 
+  .page-content {
+    flex: 1;
+  }
+
   a {
     color: var(--color-primary);
     text-decoration: underline
@@ -74,5 +78,14 @@ body {
     color: white;
     border-radius: 10px;
     padding: 13px 74px;
+  }
+}
+
+.btn-drawer-toggle {
+  --btn-bg: transparent;
+
+  &:hover {
+    --btn-shadow: unset;
+    --btn-border: transparent;
   }
 }

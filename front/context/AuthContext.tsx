@@ -20,6 +20,7 @@ type AuthContextType = {
   isLoading: boolean;
 };
 
+export const TOKEN_KEY = "abricot_token";
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -27,19 +28,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const TOKEN_KEY = "abricot_token";
 
   const fetchUser = async (jwt: string) => {
     try {
       setIsLoading(true);
-      const res = await fetchAPI("/auth/profile", {
+      const res = await fetchAPI<{ user: User }>("/auth/profile", {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       });
-      if (!res.ok) throw new Error("Token invalide");
-      const data: User = await res.json();
-      setUser(data);
+      setUser(res!.user);
     } catch {
       logout();
     } finally {

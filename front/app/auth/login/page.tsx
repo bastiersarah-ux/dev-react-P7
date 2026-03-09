@@ -17,11 +17,9 @@ export default function LoginPage() {
           password: password,
         } as LoginForm),
       });
-
       return data!;
     } catch (error: any) {
       alert(error.message);
-    } finally {
       return null;
     }
   }

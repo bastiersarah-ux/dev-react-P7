@@ -11,17 +11,20 @@ const Footer = () => {
   if (!isAuthenticated) return null;
 
   return (
-    <footer className={styles.footer}>
-      <div className={styles.start}>
+    <footer className="footer footer-center bg-base-300 h-17 p-4">
+      <div className="md:place-self-center md:justify-self-start">
         <Image
+          className={styles.img}
           src="/logo-noir.svg"
           alt="Logo Abricot noir"
           width={101}
           height={12.86}
         />
       </div>
-      <div className={styles.end}>
-        <Link href="#">Abricot 2025</Link>
+      <div className="md:place-self-center md:justify-self-end">
+        <Link className={styles.link} href="#">
+          Abricot 2025
+        </Link>
       </div>
     </footer>
   );

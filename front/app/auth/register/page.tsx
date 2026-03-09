@@ -21,7 +21,6 @@ export default function RegisterPage() {
       return data!;
     } catch (error: any) {
       alert(error.message);
-    } finally {
       return null;
     }
   }

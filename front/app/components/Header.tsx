@@ -1,13 +1,11 @@
 "use client";
 
 import styles from "./Header.module.css";
-import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import UserMenu from "./UserMenu";
-import dashboardIcon from "@front/public/dashboard.svg";
-import projetsIcon from "@front/public/projets.svg";
 import { useAuth } from "@front/context/AuthContext";
+import NavMenu from "./NavMenu";
 
 const Header = () => {
   const pathname = usePathname();
@@ -17,33 +15,41 @@ const Header = () => {
 
   return (
     <header className={styles.header}>
-      <nav className={styles.nav}>
-        <Image
-          className={styles.navbarStart}
-          src="/img/logo-abircot.svg"
-          alt="Logo Abricot"
-          width={147}
-          height={18.72}
-        />
-        <div className={styles.navbarCenter}>
-          <Link
-            href="/dashboard"
-            className={`${styles.navItem} ${pathname === "/dashboard" ? styles.active : ""}`}
+      <nav className="navbar bg-base-300 h-23.5">
+        <div className="navbar-start gap-4">
+          <label
+            htmlFor="drawer-toggle"
+            className="btn-drawer-toggle btn btn-ghost lg:hidden"
           >
-            <Image src={dashboardIcon} alt="Dashboard" width={24} height={24} />
-            <span>Tableau de bord</span>
-          </Link>
-
-          <Link
-            href="/projets"
-            className={`${styles.navItem} ${pathname === "/projets" ? styles.active : ""}`}
-          >
-            <Image src={projetsIcon} alt="Projets" width={24} height={24} />
-            <span>Projets</span>
-          </Link>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </label>
+          <Image
+            className={styles.navbarStart}
+            src="/logo-abricot.svg"
+            alt="Logo Abricot"
+            width={147}
+            height={18.72}
+          />
         </div>
-
-        <UserMenu className={styles.navbarEnd} />
+        <div className="navbar-center max-lg:hidden">
+          <NavMenu />
+        </div>
+        <div className="navbar-end">
+          <UserMenu />
+        </div>
       </nav>
     </header>
   );

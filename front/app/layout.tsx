@@ -5,6 +5,8 @@ import Header from "./components/Header";
 import AuthGuard from "./components/AuthGuard";
 import Footer from "./components/Footer";
 import { AuthProvider } from "@front/context/AuthContext";
+import Link from "next/link";
+import NavMenu from "./components/NavMenu";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,11 +30,31 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" data-theme="abricot">
-      <body>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        {/* Input toggle doit être directement sous body */}
+
         <AuthProvider>
-          <Header />
-          <AuthGuard>{children}</AuthGuard>
-          <Footer />
+          <div className="drawer drawer-mobile h-full">
+            <input
+              id="drawer-toggle"
+              type="checkbox"
+              className="drawer-toggle"
+            />
+            <div className="drawer-content flex flex-col">
+              <Header />
+              <AuthGuard>
+                <main className="flex-1 p-4">{children}</main>
+              </AuthGuard>
+              <Footer />
+            </div>
+
+            <div className="drawer-side">
+              <label htmlFor="drawer-toggle" className="drawer-overlay"></label>
+              <div className="p-4 w-64 h-full bg-base-300 text-base-content">
+                <NavMenu vertical />
+              </div>
+            </div>
+          </div>
         </AuthProvider>
       </body>
     </html>

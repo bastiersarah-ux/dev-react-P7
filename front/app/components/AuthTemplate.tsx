@@ -26,7 +26,7 @@ export default function AuthTemplate(props: AuthTemplateProps) {
     if (isAuthenticated) {
       router.replace("/dashboard");
     }
-  }, []);
+  }, [isAuthenticated, router]);
 
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
@@ -37,7 +37,6 @@ export default function AuthTemplate(props: AuthTemplateProps) {
       const res = await props.onSubmit(email, password);
       if (res) {
         login(res.token, res.user);
-        router.push("/dashboard");
       }
     }
   }

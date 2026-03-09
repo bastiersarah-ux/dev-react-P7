@@ -1,37 +1,71 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./UserMenu.module.css";
 import { useAuth } from "@front/context/AuthContext";
+import Link from "next/link";
 
 type UserMenuProps = {
-  className?: string;
   isVariant?: boolean;
 };
 
-export default function UserMenu({ className, isVariant }: UserMenuProps) {
+export default function UserMenu({ isVariant }: UserMenuProps) {
   const { user, logout } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDetailsElement>(null);
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const closeDropdown = () => {
+    dropdownRef.current?.removeAttribute("open");
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        closeDropdown();
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className={styles.container + " " + className}>
-      <button
-        className={`btn btn-circle btn-outline ${styles.userIcon} ${isVariant && styles.userIconVariant} w-16.25 h-16.25 relative top-5 left-5 
-              rotate-0 opacity-100 px-3 py-5.25 gap-2.5 rounded-[32.5px]`}
-        onClick={toggleMenu}
+    <details ref={dropdownRef} className="dropdown dropdown-end">
+      <summary
+        className={`btn btn-circle border-none ${styles.userIcon} ${
+          isVariant ? styles.userIconVariant : ""
+        } w-16.25 h-16.25`}
       >
         {getInitials(user?.name)}
-      </button>
+      </summary>
 
-      {isOpen && (
-        <div className={styles.dropdown}>
-          <button className={styles.item}>Mon compte</button>
-          <button className={styles.item} onClick={() => logout()}>
+      <ul className="menu dropdown-content rounded-box z-1 w-52 p-2 shadow-sm bg-base-300">
+        <li>
+          <Link
+            className="p-4 text-black! no-underline!"
+            href="/account"
+            onClick={closeDropdown}
+          >
+            Mon compte
+          </Link>
+        </li>
+
+        <li>
+          <button
+            className="p-4 text-left"
+            onClick={() => {
+              logout();
+              closeDropdown();
+            }}
+          >
             Déconnexion
           </button>
-        </div>
-      )}
-    </div>
+        </li>
+      </ul>
+    </details>
   );
 }
 
