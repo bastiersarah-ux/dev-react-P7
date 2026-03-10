@@ -1,5 +1,5 @@
 import { TOKEN_KEY } from "@front/context/AuthContext";
-import { SuccessResponse } from "@front/types/auth";
+import { SuccessResponse } from "@front/types/api-types";
 
 export const API_URL = "http://localhost:8000";
 

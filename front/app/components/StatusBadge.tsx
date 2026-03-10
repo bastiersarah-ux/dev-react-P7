@@ -1,14 +1,23 @@
-export default function StatusBadge({ status }) {
-  const styles = {
-    todo: "bg-red-100 text-red-500",
-    progress: "bg-yellow-100 text-yellow-600",
-    done: "bg-green-100 text-green-600",
+import { TaskStatus } from "@front/types/api-types";
+
+type StatusBadgeProp = {
+  status: TaskStatus;
+};
+
+export default function StatusBadge({ status }: StatusBadgeProp) {
+  const styles: Record<TaskStatus, string> = {
+    TODO: "bg-[var(--color-error)] text-[var(--color-error-content)]",
+    IN_PROGRESS:
+      "bg-[var(--color-warning)] text-[var(--color-warning-content)]",
+    DONE: "bg-[var(--color-success)] text-[var(--color-success-content)]",
+    CANCELLED: "bg-gray-200)] text bg-gray-400]",
   };
 
-  const labels = {
-    todo: "À faire",
-    progress: "En cours",
-    done: "Terminé",
+  const labels: Record<TaskStatus, string> = {
+    TODO: "À faire",
+    IN_PROGRESS: "En cours",
+    DONE: "Terminé",
+    CANCELLED: "Annulé",
   };
 
   return (

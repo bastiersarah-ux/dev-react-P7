@@ -1,7 +1,7 @@
 "use client";
 
-import { fetchAPI } from "@front/services/api";
-import type { RegisterForm, TokenResponse } from "@front/types/auth";
+import { fetchAPI } from "@front/services/fetch-api";
+import type { RegisterForm, TokenResponse } from "@front/types/api-types";
 import AuthTemplate from "@front/app/components/AuthTemplate";
 
 export default function RegisterPage() {

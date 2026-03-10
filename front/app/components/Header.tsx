@@ -15,7 +15,7 @@ const Header = () => {
 
   return (
     <header className={styles.header}>
-      <nav className="navbar bg-base-300 h-23.5">
+      <nav className="navbar bg-base-200 h-23.5">
         <div className="navbar-start gap-4">
           <label
             htmlFor="drawer-toggle"

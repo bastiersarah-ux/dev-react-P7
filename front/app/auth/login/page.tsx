@@ -1,7 +1,7 @@
 "use client";
 
-import { fetchAPI } from "@front/services/api";
-import type { LoginForm, TokenResponse } from "@front/types/auth";
+import { fetchAPI } from "@front/services/fetch-api";
+import type { LoginForm, TokenResponse } from "@front/types/api-types";
 import AuthTemplate from "@front/app/components/AuthTemplate";
 
 export default function LoginPage() {

@@ -1,5 +1,5 @@
 .nav {
-    background-color: var(--color-base-300);
+    background-color: var(--color-base-200);
     height: 100%;
     padding: 0 150px;
     min-height: unset;
@@ -15,7 +15,7 @@
 
 
         &:hover {
-            color: var(--color-base-300);
+            color: var(--color-base-200);
         }
 
         .logo {

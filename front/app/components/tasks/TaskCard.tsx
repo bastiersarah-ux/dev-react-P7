@@ -1,5 +1,6 @@
-import { Task } from "@front/types/auth";
-import StatusBadge from "./StatusBadge";
+import { Task } from "@front/types/api-types";
+import Image from "next/image";
+import StatusBadge from "../StatusBadge";
 import CalendarIcon from "@front/public/icon-calendar.svg";
 import ProjectsIcon from "@front/public/icon-projets.svg";
 import CommentsIcon from "@front/public/icon-comments.svg";
@@ -17,13 +18,21 @@ export default function TaskCard({ task }: TaskCardProps) {
         <p className="text-sm text-gray-500">{task.description}</p>
 
         <div className="flex gap-4 text-xs text-gray-400 mt-2">
-          <ProjectsIcon className="w-4 h-4" />
-          <span>{task.projectId}</span>
-          <CalendarIcon className="w-4 h-4" />
+          <Image src={ProjectsIcon} alt="Icône projet" className="w-4 h-4" />
+          <span>{task.project.name}</span>
+          <Image
+            src={CalendarIcon}
+            alt="Icône calendrier"
+            className="w-4 h-4"
+          />
           {task.dueDate && (
             <span>{new Date(task.dueDate).toLocaleDateString()}</span>
           )}
-          <CommentsIcon className="w-4 h-4" />
+          <Image
+            src={CommentsIcon}
+            alt="Icône commentaires"
+            className="w-4 h-4"
+          />
           <span>{task.comments?.length ?? 0}</span>
         </div>
       </div>

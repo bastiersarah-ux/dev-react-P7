@@ -15,7 +15,7 @@ const NavMenu = ({ vertical = false }: NavMenuProps) => {
 
   const links = [
     { href: "/dashboard", label: "Tableau de bord", icon: dashboardIcon },
-    { href: "/projets", label: "Projets", icon: projetsIcon },
+    { href: "/projects", label: "Projets", icon: projetsIcon },
   ];
 
   return (
@@ -27,7 +27,7 @@ const NavMenu = ({ vertical = false }: NavMenuProps) => {
           <Link
             href={link.href}
             className={`btn btn-ghost ${
-              pathname === link.href ? "btn-active text-base-300!" : ""
+              pathname === link.href ? "btn-active text-base-200!" : ""
             }`}
           >
             <div

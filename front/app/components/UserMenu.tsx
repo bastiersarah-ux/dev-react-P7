@@ -42,7 +42,7 @@ export default function UserMenu({ isVariant }: UserMenuProps) {
         {getInitials(user?.name)}
       </summary>
 
-      <ul className="menu dropdown-content rounded-box z-1 w-52 p-2 shadow-sm bg-base-300">
+      <ul className="menu dropdown-content rounded-box z-1 w-52 p-2 shadow-sm bg-base-200">
         <li>
           <Link
             className="p-4 text-black! no-underline!"

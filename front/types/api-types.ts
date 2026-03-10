@@ -58,14 +58,17 @@ export type Comment = {
   updatedAt: Date;
 };
 
+export type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE" | "CANCELLED";
+
 export type Task = {
   id: string;
   title: string;
   description?: string;
-  status: "TODO" | "IN_PROGRESS" | "DONE" | "CANCELLED";
+  status: TaskStatus;
   priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
   dueDate?: Date;
   projectId: string;
+  project: Pick<Project, "id" | "description" | "name">;
   creatorId: string;
   assignees?: TaskAssignee[];
   comments?: Comment[];

@@ -8,8 +8,8 @@ import {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-import { User } from "@front/types/auth";
-import { fetchAPI } from "@front/services/api";
+import { User } from "@front/types/api-types";
+import { fetchAPI } from "@front/services/fetch-api";
 
 type AuthContextType = {
   user: User | null;

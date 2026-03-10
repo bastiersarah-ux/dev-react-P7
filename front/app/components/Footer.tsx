@@ -11,7 +11,7 @@ const Footer = () => {
   if (!isAuthenticated) return null;
 
   return (
-    <footer className="footer footer-center bg-base-300 h-17 p-4">
+    <footer className="footer footer-center bg-base-200 h-17 p-4">
       <div className="md:place-self-center md:justify-self-start">
         <Image
           className={styles.img}

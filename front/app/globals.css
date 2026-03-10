@@ -7,8 +7,8 @@
   prefersdark: false;
   color-scheme: "light";
   --color-base-100: #F9FAFB;
-  --color-base-200: #1F1F1F;
-  --color-base-300: #FFFFFF;
+  --color-base-200: #FFFFFF;
+  --color-base-300: #1F1F1F;
   --color-base-content: oklch(21% 0.006 285.885);
   --color-primary: #D3590B;
   --color-primary-content: #FFFFFF;
@@ -78,6 +78,11 @@ body {
     color: white;
     border-radius: 10px;
     padding: 13px 74px;
+  }
+
+  .btn-active {
+    --btn-bg:
+      color-mix(in oklab, var(--btn-color, var(--color-base-300)), #000 7%);
   }
 }
 

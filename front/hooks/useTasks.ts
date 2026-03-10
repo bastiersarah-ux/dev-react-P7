@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Task } from "@front/types/auth";
+import { Task } from "@front/types/api-types";
 import { getTasks } from "@front/services/taskService";
 
 export const useTasks = () => {

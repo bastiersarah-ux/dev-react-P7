@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import styles from "./Account.module.css";
-import { User } from "@front/types/auth";
+import { User } from "@front/types/api-types";
 
 export const tokenKey = "auth-key";
 

@@ -50,7 +50,7 @@ export default function RootLayout({
 
             <div className="drawer-side">
               <label htmlFor="drawer-toggle" className="drawer-overlay"></label>
-              <div className="p-4 w-64 h-full bg-base-300 text-base-content">
+              <div className="p-4 w-64 h-full bg-base-200 text-base-content">
                 <NavMenu vertical />
               </div>
             </div>

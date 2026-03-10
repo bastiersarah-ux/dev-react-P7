@@ -6,7 +6,7 @@ import Link from "next/link";
 import styles from "./AuthTemplate.module.css";
 import Image from "next/image";
 import AbricotIcon from "@front/public/logo-abricot.svg";
-import { TokenResponse } from "@front/types/auth";
+import { TokenResponse } from "@front/types/api-types";
 import { useAuth } from "@front/context/AuthContext";
 
 export const tokenKey = "auth-key";
