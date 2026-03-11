@@ -14,9 +14,22 @@ const NavMenu = ({ vertical = false }: NavMenuProps) => {
   const pathname = usePathname();
 
   const links = [
-    { href: "/dashboard", label: "Tableau de bord", icon: dashboardIcon },
-    { href: "/projects", label: "Projets", icon: projetsIcon },
+    {
+      href: "/dashboard",
+      label: "Tableau de bord",
+      icon: dashboardIcon,
+      exact: true,
+    },
+    { href: "/projects", label: "Projets", icon: projetsIcon, exact: false },
   ];
+
+  const isActive = (link: { href: string; exact: boolean }) => {
+    if (link.exact) {
+      return pathname === link.href;
+    } else {
+      return pathname.startsWith(link.href);
+    }
+  };
 
   return (
     <ul
@@ -27,7 +40,7 @@ const NavMenu = ({ vertical = false }: NavMenuProps) => {
           <Link
             href={link.href}
             className={`btn btn-ghost ${
-              pathname === link.href ? "btn-active text-base-200!" : ""
+              isActive(link) ? "btn-active text-base-200!" : ""
             }`}
           >
             <div

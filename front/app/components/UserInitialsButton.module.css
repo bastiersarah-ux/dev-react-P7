@@ -1,0 +1,29 @@
+@reference "tailwindcss";
+
+.userIcon {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-align: center;
+    text-transform: uppercase;
+    background: var(--color-secondary);
+    color: var(--color-secondary-content);
+
+    &.userIconVariant1 {
+        background: var(--color-primary);
+        color: var(--color-primary-content);
+    }
+
+    &.userIconVariant2 {
+        background: #E5E7EB;
+        color: #0F0F0F;
+    }
+
+    &.userIconVariant3 {
+        background: var(--color-secondary);
+        color: #0F0F0F;
+    }
+}

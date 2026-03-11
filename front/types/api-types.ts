@@ -40,6 +40,18 @@ export type Project = {
   updatedAt: Date;
 };
 
+export type DashboardProject = {
+  id: string;
+  name: string;
+  description?: string;
+  ownerId: string;
+  owner?: User;
+  members?: ProjectMember[];
+  createdAt: Date;
+  updatedAt: Date;
+  tasks: Task[];
+};
+
 export type TaskAssignee = {
   id: string;
   userId: string;

@@ -70,7 +70,12 @@ body {
 
   a {
     color: var(--color-primary);
-    text-decoration: underline
+    text-decoration: underline;
+
+    &.no-link {
+      text-decoration: none;
+      color: unset;
+    }
   }
 
   .btn-gray {

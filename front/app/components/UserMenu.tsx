@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import styles from "./UserMenu.module.css";
+import styles from "./UserInitialsButton.module.css";
 import { useAuth } from "@front/context/AuthContext";
 import Link from "next/link";
+import { getInitials } from "@front/services/userService";
+import UserInitialsButton from "./UserInitialsButton";
+import { UserButtonVariant } from "@front/types/props";
 
 type UserMenuProps = {
-  isVariant?: boolean;
+  variant?: UserButtonVariant;
 };
 
-export default function UserMenu({ isVariant }: UserMenuProps) {
+export default function UserMenu({ variant }: UserMenuProps) {
   const { user, logout } = useAuth();
   const dropdownRef = useRef<HTMLDetailsElement>(null);
 
@@ -34,12 +37,8 @@ export default function UserMenu({ isVariant }: UserMenuProps) {
 
   return (
     <details ref={dropdownRef} className="dropdown dropdown-end">
-      <summary
-        className={`btn btn-circle border-none ${styles.userIcon} ${
-          isVariant ? styles.userIconVariant : ""
-        } w-16.25 h-16.25`}
-      >
-        {getInitials(user?.name)}
+      <summary className="btn btn-ghost btn-circle mr-3 p-0  w-16.25 h-16.25">
+        <UserInitialsButton name={user?.name} variant={variant} />
       </summary>
 
       <ul className="menu dropdown-content rounded-box z-1 w-52 p-2 shadow-sm bg-base-200">
@@ -67,13 +66,4 @@ export default function UserMenu({ isVariant }: UserMenuProps) {
       </ul>
     </details>
   );
-}
-
-function getInitials(name?: string) {
-  if (!name) return "";
-  return name
-    .split(" ")
-    .map((word) => word[0])
-    .join("")
-    .toUpperCase();
 }
