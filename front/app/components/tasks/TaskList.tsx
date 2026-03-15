@@ -1,5 +1,5 @@
 import { useTasks } from "@front/hooks/useTasks";
-import SearchBar from "../SearchBar";
+import SearchBar from "./SearchBar";
 import { Task } from "@front/types/api-types";
 import TaskCard from "./TaskCard";
 import { TaskViewProp } from "@front/types/props";

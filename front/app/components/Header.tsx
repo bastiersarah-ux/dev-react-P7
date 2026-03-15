@@ -3,7 +3,7 @@
 import styles from "./Header.module.css";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import UserMenu from "./UserMenu";
+import UserMenu from "./users/UserMenu";
 import { useAuth } from "@front/context/AuthContext";
 import NavMenu from "./NavMenu";
 

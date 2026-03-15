@@ -4,7 +4,7 @@ import styles from "./SearchBar.module.css";
 
 export default function SearchBar() {
   return (
-    <label className="input input-bordered flex items-center gap-2 w-72">
+    <label className="input input-bordered flex items-center gap-2 w-72 h-full">
       <input type="text" className="grow" placeholder="Rechercher une tâche" />
       <Image src={SearchIcon} alt="Icône commentaires" className="w-4 h-4" />
     </label>

@@ -2,9 +2,17 @@ import { TaskStatus } from "@front/types/api-types";
 
 type StatusBadgeProp = {
   status: TaskStatus;
+  formMode?: boolean;
+  onSelect?: (value: TaskStatus) => void;
+  isChecked?: boolean;
 };
 
-export default function StatusBadge({ status }: StatusBadgeProp) {
+export default function StatusBadge({
+  status,
+  formMode,
+  onSelect,
+  isChecked,
+}: StatusBadgeProp) {
   const styles: Record<TaskStatus, string> = {
     TODO: "bg-[var(--color-error)] text-[var(--color-error-content)]",
     IN_PROGRESS:
@@ -19,6 +27,19 @@ export default function StatusBadge({ status }: StatusBadgeProp) {
     DONE: "Terminé",
     CANCELLED: "Annulé",
   };
+
+  if (formMode && onSelect) {
+    return (
+      <input
+        className={`btn btn-ghost btn-badge ${styles[status]}`}
+        type="radio"
+        name="status"
+        checked={isChecked ?? false}
+        aria-label={labels[status]}
+        onChange={() => onSelect(status)}
+      />
+    );
+  }
 
   return (
     <span className={`text-xs px-3 py-1 rounded ${styles[status]}`}>

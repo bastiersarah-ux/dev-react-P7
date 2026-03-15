@@ -2,7 +2,7 @@
 
 import { fetchAPI } from "@front/services/fetch-api";
 import type { RegisterForm, TokenResponse } from "@front/types/api-types";
-import AuthTemplate from "@front/app/components/AuthTemplate";
+import AuthTemplate from "@front/app/components/auth/AuthTemplate";
 
 export default function RegisterPage() {
   async function register(

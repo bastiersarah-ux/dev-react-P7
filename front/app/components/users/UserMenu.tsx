@@ -3,8 +3,8 @@ import styles from "./UserInitialsButton.module.css";
 import { useAuth } from "@front/context/AuthContext";
 import Link from "next/link";
 import { getInitials } from "@front/services/userService";
-import UserInitialsButton from "./UserInitialsButton";
 import { UserButtonVariant } from "@front/types/props";
+import UserInitialsButton from "./UserInitialsButton";
 
 type UserMenuProps = {
   variant?: UserButtonVariant;
@@ -38,7 +38,7 @@ export default function UserMenu({ variant }: UserMenuProps) {
   return (
     <details ref={dropdownRef} className="dropdown dropdown-end">
       <summary className="btn btn-ghost btn-circle mr-3 p-0  w-16.25 h-16.25">
-        <UserInitialsButton name={user?.name} variant={variant} />
+        <UserInitialsButton user={user!} variant={variant} fullWidth />
       </summary>
 
       <ul className="menu dropdown-content rounded-box z-1 w-52 p-2 shadow-sm bg-base-200">

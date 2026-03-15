@@ -2,12 +2,13 @@
 
 import { useEffect } from "react";
 import PageHeader from "../components/PageHeader";
-import { useDashboardProjects } from "./../../hooks/useProjects";
-import { Task } from "@front/types/api-types";
+import { useDashboardProjects } from "../../hooks/useDashboardProjects";
+import { ProjectMember, ProjectMemberRole, Task } from "@front/types/api-types";
 import Image from "next/image";
 import TeamIcon from "@front/public/team.svg";
-import UserInitialsButton from "../components/UserInitialsButton";
+import UserInitialsButton from "../components/users/UserInitialsButton";
 import Link from "next/link";
+import { useAuth } from "@front/context/AuthContext";
 
 export default function ProjectPage() {
   const { dashboardProjects } = useDashboardProjects();
@@ -31,11 +32,23 @@ export default function ProjectPage() {
       <div className="grid grid-cols-3 gap-3">
         {dashboardProjects.map((project) => {
           const { done, total, percentage } = getProgression(project.tasks);
-          const users = [project.owner!].concat(
-            project.members
-              ?.filter((member) => member.role != "OWNER")
-              .map((member) => member.user) ?? [],
+          const ownerMember = project.members?.find(
+            (member) => member.user.id == project.ownerId,
           );
+          const members: ProjectMember[] =
+            [
+              {
+                role: "OWNER" as ProjectMemberRole,
+                id: ownerMember?.id ?? project.ownerId,
+                user: project.owner!,
+                joinedAt: ownerMember?.joinedAt ?? new Date(),
+              },
+            ].concat(
+              project.members?.filter(
+                (member) =>
+                  member.role != "OWNER" && member.user.id != project.ownerId,
+              ) ?? [],
+            ) ?? [];
 
           return (
             <Link
@@ -72,14 +85,15 @@ export default function ProjectPage() {
                   height={11}
                 />
                 <span className="text-sm font-medium">
-                  Équipe ({users.length ?? 0})
+                  Équipe ({members.length ?? 0})
                 </span>
-                <div>
-                  {users.map((user) => (
+                <div className="flex justify-center items-center gap-2">
+                  {members.map((member) => (
                     <UserInitialsButton
-                      key={user.id}
-                      name={user.name}
-                      showFull
+                      key={member.id}
+                      user={member.user}
+                      variant={member.role == "OWNER" ? "Variant3" : "Variant2"}
+                      showFull={member.role === "OWNER"}
                     />
                   ))}
                 </div>

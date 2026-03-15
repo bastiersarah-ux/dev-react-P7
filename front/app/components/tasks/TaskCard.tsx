@@ -1,6 +1,6 @@
 import { Task } from "@front/types/api-types";
 import Image from "next/image";
-import StatusBadge from "../StatusBadge";
+import StatusBadge from "./StatusBadge";
 import CalendarIcon from "@front/public/icon-calendar.svg";
 import ProjectsIcon from "@front/public/icon-projets.svg";
 import CommentsIcon from "@front/public/icon-comments.svg";

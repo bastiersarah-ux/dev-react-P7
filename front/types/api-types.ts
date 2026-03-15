@@ -22,9 +22,11 @@ export type TokenResponse = {
   user: User;
 };
 
+export type ProjectMemberRole = "OWNER" | "ADMIN" | "CONTRIBUTOR";
+
 export type ProjectMember = {
   id: string;
-  role: "OWNER" | "ADMIN" | "CONTRIBUTOR";
+  role: ProjectMemberRole;
   user: User;
   joinedAt: Date;
 };
@@ -86,6 +88,14 @@ export type Task = {
   comments?: Comment[];
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type TaskInput = {
+  title?: string;
+  description?: string;
+  status?: TaskStatus;
+  priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+  dueDate?: string;
 };
 
 export type ErrorResponse = {

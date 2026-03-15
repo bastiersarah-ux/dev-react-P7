@@ -39,7 +39,7 @@ const prisma = new PrismaClient();
  */
 export const getAssignedTasks = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const authReq = req as AuthRequest;
@@ -105,7 +105,7 @@ export const getAssignedTasks = async (
   } catch (error) {
     console.error(
       "Erreur lors de la récupération des tâches assignées:",
-      error
+      error,
     );
     sendServerError(res, "Erreur lors de la récupération des tâches assignées");
   }
@@ -152,7 +152,7 @@ export const getAssignedTasks = async (
  */
 export const getProjectsWithTasks = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const authReq = req as AuthRequest;
@@ -181,6 +181,17 @@ export const getProjectsWithTasks = async (
             id: true,
             name: true,
             email: true,
+          },
+        },
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
           },
         },
         tasks: {
@@ -237,11 +248,11 @@ export const getProjectsWithTasks = async (
   } catch (error) {
     console.error(
       "Erreur lors de la récupération des projets avec tâches:",
-      error
+      error,
     );
     sendServerError(
       res,
-      "Erreur lors de la récupération des projets avec tâches"
+      "Erreur lors de la récupération des projets avec tâches",
     );
   }
 };
@@ -252,7 +263,7 @@ export const getProjectsWithTasks = async (
  */
 export const getDashboardStats = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const authReq = req as AuthRequest;
@@ -336,10 +347,13 @@ export const getDashboardStats = async (
         total: assignedTasksCount,
         urgent: urgentTasksCount,
         overdue: overdueTasksCount,
-        byStatus: tasksByStatus.reduce((acc, item) => {
-          acc[item.status] = item._count.status;
-          return acc;
-        }, {} as Record<string, number>),
+        byStatus: tasksByStatus.reduce(
+          (acc, item) => {
+            acc[item.status] = item._count.status;
+            return acc;
+          },
+          {} as Record<string, number>,
+        ),
       },
       projects: {
         total: projectsCount,
