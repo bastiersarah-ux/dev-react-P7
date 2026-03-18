@@ -1,3 +1,5 @@
+"use client";
+
 import { TaskStatus } from "@front/types/api-types";
 
 type StatusBadgeProp = {

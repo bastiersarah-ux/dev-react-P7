@@ -26,7 +26,7 @@ export default function ListAiTask({ tasks }: ListAiTaskProp) {
 
   return (
     <>
-      <button className="btn btn-primary text-[16px]" onClick={showModal}>
+      <button className="btn btn-primary h-12.5 w-[94px]" onClick={showModal}>
         <Image src={StarIcon} alt="AI" width={21} height={21} />
         IA
       </button>

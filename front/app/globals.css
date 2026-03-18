@@ -72,7 +72,7 @@ body {
 
   h3 {
     font-size: 18px;
-    font-weight: 400;
+    font-weight: 600;
     font-family: 'Manrope';
   }
 
@@ -125,6 +125,11 @@ body {
   .btn-badge {
     --radius-field: 10px;
     --size: 25px;
+  }
+
+  .grid-with-separator {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
   }
 }
 

@@ -44,18 +44,18 @@ export default function UpdateMyAccount(props: AccountProps) {
 
   return (
     <div
-      className={`${styles["page-content"]} max-md:flex-col flex justify-center items-center`}
+      className={`${styles["page-content"]} max-md:flex-col px-25 flex justify-center items-center`}
     >
-      <div className="card w-full max-w-md bg-base-100 shadow-xl">
+      <div className="card card-border border-gray-200 w-full bg-base-200">
         <div className="card-body">
           <h3 className="card-title">Mon compte</h3>
           <p className="text-base mb-4">
             {firstName} {lastName}
           </p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div className="form-control">
-              <label className="label" htmlFor="lastName">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+            <fieldset className="fieldset">
+              <label className="label text-black" htmlFor="lastName">
                 Nom
               </label>
               <input
@@ -65,10 +65,10 @@ export default function UpdateMyAccount(props: AccountProps) {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
               />
-            </div>
+            </fieldset>
 
-            <div className="form-control">
-              <label className="label" htmlFor="firstName">
+            <fieldset className="fieldset">
+              <label className="label text-black" htmlFor="firstName">
                 Prénom
               </label>
               <input
@@ -78,10 +78,10 @@ export default function UpdateMyAccount(props: AccountProps) {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
               />
-            </div>
+            </fieldset>
 
-            <div className="form-control">
-              <label className="label" htmlFor="email">
+            <fieldset className="fieldset">
+              <label className="label text-black" htmlFor="email">
                 Email
               </label>
               <input
@@ -91,10 +91,10 @@ export default function UpdateMyAccount(props: AccountProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-            </div>
+            </fieldset>
 
-            <div className="form-control">
-              <label htmlFor="password" className="label">
+            <fieldset className="fieldset">
+              <label htmlFor="password" className="label text-black">
                 Mot de passe
               </label>
               <input
@@ -104,9 +104,9 @@ export default function UpdateMyAccount(props: AccountProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-            </div>
+            </fieldset>
 
-            <button className="btn btn-primary mt-2" type="submit">
+            <button className="btn self-start btn-primary mt-2" type="submit">
               Modifier les informations
             </button>
           </form>

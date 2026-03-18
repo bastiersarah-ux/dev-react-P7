@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+
 import styles from "./UserInitialsButton.module.css";
 import { getInitials } from "@front/services/userService";
 import { UserButtonVariant } from "@front/types/props";
@@ -31,7 +32,7 @@ export default function UserInitialsButton({
   if (showFull) {
     return (
       <div
-        className={`flex items-center gap-3 justify-center ${fullWidth && "w-full"} h-full`}
+        className={`flex flex-wrap items-center gap-3 justify-center ${fullWidth && "w-full"} h-full`}
       >
         <span
           className={`btn btn-circle border-none ${styles.userIcon} ${cssClass} ${fullWidth && "w-full"} h-full`}

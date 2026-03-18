@@ -5,6 +5,7 @@ import { Project, ProjectInput, User } from "@front/types/api-types";
 import UserSelector from "../users/UserSelector";
 import { createProject, updateProject } from "@front/services/projectsService";
 import { useRouter } from "next/navigation";
+import { generateRandomId } from "@front/helpers/project-helper";
 
 type CreateOrUpdateProjectProp = {
   projectToEdit?: Project | null;
@@ -17,8 +18,9 @@ export default function CreateOrUpdateProject({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const myModal = () => document.querySelector<HTMLDialogElement>("#my_modal");
+  const myModal = () => document.querySelector<HTMLDialogElement>("#" + id);
 
   const showModal = () => {
     myModal()?.showModal();
@@ -48,39 +50,57 @@ export default function CreateOrUpdateProject({
 
   const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
-    const input: ProjectInput = {
-      name: title,
-      description,
-      contributors: selectedUsers.map((user) => user.email) ?? [],
-    };
+    setIsSubmitting(true);
+    try {
+      const input: ProjectInput = {
+        name: title,
+        description,
+        contributors: selectedUsers.map((user) => user.email) ?? [],
+      };
 
-    const res: Project | null = projectToEdit
-      ? await updateProject(projectToEdit.id, input)
-      : await createProject(input);
-    if (!res) {
-      return;
-    } else if (!projectToEdit && res.id) {
-      router.push(`/projects/${res.id}`);
-    } else {
-      location.reload();
+      const res: Project | null = projectToEdit
+        ? await updateProject(projectToEdit.id, input)
+        : await createProject(input);
+
+      if (!res) {
+        return;
+      } else if (!projectToEdit && res.id) {
+        router.push(`/projects/${res.id}`);
+      } else {
+        location.reload();
+      }
+
+      dismissModal();
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement du projet:", error);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    dismissModal();
   };
 
   const isEditMode = !!projectToEdit;
 
+  const id = generateRandomId("project-modal");
+
   return (
     <>
       <button
-        className={`btn ${isEditMode ? "btn-link text-primary" : "bg-black text-white"} font-normal text-base px-4 py-1 rounded-[10px]`}
+        className={`btn ${isEditMode ? "btn-link text-primary" : "bg-black text-white h-[50px]!"} font-normal px-4 py-1 rounded-[10px]`}
         onClick={showModal}
       >
         {isEditMode ? "Modifier" : "+ Créer un projet"}
       </button>
 
-      <dialog id="my_modal" className="modal">
+      <dialog id={id} className="modal">
         <div className="modal-box w-11/12 max-w-lg relative">
+          {isSubmitting && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-neutral-900/50 rounded-2xl">
+              <span
+                className="loading loading-spinner loading-lg text-white"
+                aria-label="Enregistrement en cours"
+              />
+            </div>
+          )}
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕
@@ -97,6 +117,7 @@ export default function CreateOrUpdateProject({
                 <legend className="fieldset-legend">Titre*</legend>
                 <input
                   type="text"
+                  required
                   className="input input-bordered w-full"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -107,6 +128,7 @@ export default function CreateOrUpdateProject({
                 <legend className="fieldset-legend">Description*</legend>
                 <input
                   type="text"
+                  required
                   className="input input-bordered w-full"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -119,7 +141,11 @@ export default function CreateOrUpdateProject({
               />
 
               <div className="modal-action">
-                <button type="submit" className="btn btn-primary">
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-outline"
+                  disabled={isSubmitting}
+                >
                   {projectToEdit ? "Enregistrer" : "+ Ajouter un projet"}
                 </button>
               </div>

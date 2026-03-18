@@ -26,12 +26,25 @@ async function forwardRequest(req: NextRequest) {
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const backendResponse = await fetch(targetUrl, {
-    method: req.method,
-    headers,
-    body,
-    cache: "no-store",
-  });
+  let backendResponse: Response;
+  try {
+    backendResponse = await fetch(targetUrl, {
+      method: req.method,
+      headers,
+      body,
+      cache: "no-store",
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          "Impossible de joindre l'API. Vérifiez que le backend tourne et que NEXT_PUBLIC_API_URL est correct.",
+        details: error?.message,
+      },
+      { status: 502 },
+    );
+  }
 
   const data = await backendResponse.json().catch(() => null);
 

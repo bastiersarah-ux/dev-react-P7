@@ -1,19 +1,19 @@
-import { useTasks } from "@front/hooks/useTasks";
+"use client";
+
 import SearchBar from "./SearchBar";
-import { Task } from "@front/types/api-types";
 import TaskCard from "./TaskCard";
 import { TaskViewProp } from "@front/types/props";
 
 export default function TaskList({ tasks }: TaskViewProp) {
   return (
-    <div className="card bg-white shadow-md p-6 space-y-6">
+    <div className="card bg-white gap-10 shadow-md p-6 space-y-6">
       <div className="flex justify-between items-center m-px">
         <div className="flex flex-col">
           <h2 className="font-semibold">Mes tâches assignées</h2>
           <h4>Par ordre de priorité</h4>
         </div>
 
-        <div className="flex justify-end items-center">
+        <div className="flex justify-end items-center h-16.25">
           <SearchBar />
         </div>
       </div>

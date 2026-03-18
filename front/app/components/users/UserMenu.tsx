@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import styles from "./UserInitialsButton.module.css";
+"use client";
+
+import { useEffect, useRef } from "react";
 import { useAuth } from "@front/context/AuthContext";
 import Link from "next/link";
-import { getInitials } from "@front/services/userService";
 import { UserButtonVariant } from "@front/types/props";
 import UserInitialsButton from "./UserInitialsButton";
 

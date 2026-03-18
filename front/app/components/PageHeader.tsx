@@ -1,10 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import styles from "./PageHeader.module.css";
-import { useAuth } from "@front/context/AuthContext";
-import Link from "next/link";
-import CreateOrUpdateProject from "./tasks/CreateOrUpdateProject";
+import CreateOrUpdateProject from "./dialogs/CreateOrUpdateProject";
 
 type PageHeaderProp = {
   title: string;

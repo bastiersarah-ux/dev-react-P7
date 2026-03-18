@@ -1,61 +1,39 @@
-"use client";
-
-import { useEffect } from "react";
 import PageHeader from "../components/PageHeader";
-import { useDashboardProjects } from "../../hooks/useDashboardProjects";
 import { ProjectMember, ProjectMemberRole, Task } from "@front/types/api-types";
 import Image from "next/image";
 import TeamIcon from "@front/public/team.svg";
 import UserInitialsButton from "../components/users/UserInitialsButton";
 import Link from "next/link";
-import { useAuth } from "@front/context/AuthContext";
+import {
+  getDashboardProjects,
+  getProjects,
+} from "@front/services/projectsService";
+import { getServerAuth } from "@front/lib/server-auth";
+import { convertToProjectItemList } from "@front/types/project";
 
-export default function ProjectPage() {
-  const { dashboardProjects } = useDashboardProjects();
+export default async function ProjectPage() {
+  await getServerAuth();
+  const dashboardProjects = await getDashboardProjects({ cache: "no-store" });
+  const ownerProjects = await getProjects({ cache: "no-store" });
 
-  useEffect(() => {
-    console.log(dashboardProjects);
-  }, [dashboardProjects]);
-
-  const getProgression = (tasks: Task[]) => {
-    const total = tasks.length;
-    const done = tasks.filter((task) => task.status === "DONE").length;
-    const percentage = total > 0 ? Math.round((done / total) * 100) : 0;
-    return { done, total, percentage };
-  };
+  const projects = convertToProjectItemList(dashboardProjects, ownerProjects);
 
   return (
-    <>
-      <div className="w-full px-6">
+    <main className="px-44 py-17.5 flex flex-col gap-19  flex-1">
+      <div className="w-full">
         <PageHeader title="Mes projets" subtitle="Gérez vos projets" />
       </div>
-      <div className="grid grid-cols-3 gap-3">
-        {dashboardProjects.map((project) => {
-          const { done, total, percentage } = getProgression(project.tasks);
-          const ownerMember = project.members?.find(
-            (member) => member.user.id == project.ownerId,
-          );
-          const members: ProjectMember[] =
-            [
-              {
-                role: "OWNER" as ProjectMemberRole,
-                id: ownerMember?.id ?? project.ownerId,
-                user: project.owner!,
-                joinedAt: ownerMember?.joinedAt ?? new Date(),
-              },
-            ].concat(
-              project.members?.filter(
-                (member) =>
-                  member.role != "OWNER" && member.user.id != project.ownerId,
-              ) ?? [],
-            ) ?? [];
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 auto-rows-fr">
+        {projects.map((project) => {
+          const { done, total, percentage } = project;
+          const members: ProjectMember[] = project.members ?? [];
 
           return (
-            <div>
+            <div key={project.id} className="h-full">
               <Link
                 href={`/projects/${project.id}`}
                 key={project.id}
-                className="card p-5 gap-14 no-link bg-white"
+                className="card h-full p-5 gap-14 no-link bg-white flex flex-col"
               >
                 <div>
                   <h3>{project.name}</h3>
@@ -80,7 +58,7 @@ export default function ProjectPage() {
                 )}
 
                 {total === 0 && <p>Aucune tâche pour ce projet</p>}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 mt-auto">
                   <div className="flex items-center gap-2">
                     <Image
                       src={TeamIcon}
@@ -90,17 +68,28 @@ export default function ProjectPage() {
                     />
                     <h6>Équipe ({members.length ?? 0})</h6>
                   </div>
-                  <div className="flex gap-2 h-6.75">
-                    {members.map((member) => (
-                      <UserInitialsButton
-                        key={member.id}
-                        user={member.user}
-                        variant={
-                          member.role == "OWNER" ? "Variant3" : "Variant2"
-                        }
-                        showFull={member.role === "OWNER"}
-                      />
-                    ))}
+                  <div className="flex gap-2 h-6.75 flex-wrap">
+                    {members
+                      .filter((m) => m.role == "OWNER")
+                      .map((member) => (
+                        <UserInitialsButton
+                          key={member.id}
+                          user={member.user}
+                          variant={"Variant3"}
+                          showFull={member.role === "OWNER"}
+                        />
+                      ))}
+                    <div className="">
+                      {members
+                        .filter((m) => m.role != "OWNER")
+                        .map((member) => (
+                          <UserInitialsButton
+                            key={member.id}
+                            user={member.user}
+                            variant={"Variant2"}
+                          />
+                        ))}
+                    </div>
                   </div>
                 </div>
               </Link>
@@ -108,6 +97,6 @@ export default function ProjectPage() {
           );
         })}
       </div>
-    </>
+    </main>
   );
 }

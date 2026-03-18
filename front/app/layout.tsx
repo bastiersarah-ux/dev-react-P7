@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
-import AuthGuard from "./components/auth/AuthGuard";
 import Footer from "./components/Footer";
-import { AuthProvider } from "@front/context/AuthContext";
 import NavMenu from "./components/NavMenu";
+import ClientProviders from "./client-providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +31,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {/* Input toggle doit être directement sous body */}
 
-        <AuthProvider>
+        <ClientProviders>
           <div className="drawer drawer-mobile h-full">
             <input
               id="drawer-toggle"
@@ -41,9 +40,7 @@ export default function RootLayout({
             />
             <div className="drawer-content flex flex-col">
               <Header />
-              <AuthGuard>
-                <main className="flex-1 p-4">{children}</main>
-              </AuthGuard>
+              {children}
               <Footer />
             </div>
 
@@ -54,7 +51,7 @@ export default function RootLayout({
               </div>
             </div>
           </div>
-        </AuthProvider>
+        </ClientProviders>
       </body>
     </html>
   );

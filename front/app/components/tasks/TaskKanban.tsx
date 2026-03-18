@@ -1,3 +1,5 @@
+"use client";
+
 import { Task, TaskStatus } from "@front/types/api-types";
 import { TaskViewProp } from "@front/types/props";
 import { useEffect, useState } from "react";
@@ -12,8 +14,8 @@ export default function TaskKanban({ tasks }: TaskViewProp) {
   const labels: Record<TaskStatus, string> = {
     TODO: "À faire",
     IN_PROGRESS: "En cours",
-    DONE: "Terminé",
-    CANCELLED: "Annulé",
+    DONE: "Terminées",
+    CANCELLED: "Annulées",
   };
 
   const [columns, setColumns] = useState<KabanColumn[]>([]);
@@ -29,7 +31,7 @@ export default function TaskKanban({ tasks }: TaskViewProp) {
   }, [tasks]);
 
   return (
-    <div className="flex gap-4">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 auto-rows-fr">
       {columns.map((column) => (
         <div className="card bg-white px-5 py-5 gap-5" key={column.name}>
           <div className="flex items-center gap-2.5">

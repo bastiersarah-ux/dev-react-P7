@@ -14,27 +14,31 @@ export function getInitials(name?: string) {
     .toUpperCase();
 }
 
-export const getProfile = async (): Promise<User | null> => {
-  const res = await fetchAPI<{ user: User }>("/auth/profile");
+export const getProfile = async (init?: RequestInit): Promise<User | null> => {
+  const res = await fetchAPI<{ user: User }>("/auth/profile", init);
   return res?.user ?? null;
 };
 
 export const updateProfile = async (
   data: UpdateProfileInput,
+  init?: RequestInit,
 ): Promise<User | null> => {
   const res = await fetchAPI<{ user: User }>("/auth/profile", {
     method: "PUT",
     body: JSON.stringify(data),
+    ...init,
   });
   return res?.user ?? null;
 };
 
 export const updatePassword = async (
   data: UpdatePasswordInput,
+  init?: RequestInit,
 ): Promise<boolean> => {
   const res = await fetchAPI("/auth/password", {
     method: "PUT",
     body: JSON.stringify(data),
+    ...init,
   });
   return res?.success ?? false;
 };

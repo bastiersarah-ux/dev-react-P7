@@ -1,22 +1,27 @@
 "use client";
 
-import StatusBadge from "./StatusBadge";
+import StatusBadge from "../tasks/StatusBadge";
 import {
   Project,
   Task,
   TaskAssignee,
+  TaskInput,
   TaskStatus,
 } from "@front/types/api-types";
 import { SubmitEvent, useEffect, useState } from "react";
 import { User } from "@front/types/api-types";
 import UserSelector from "../users/UserSelector";
+import { generateRandomId } from "@front/helpers/project-helper";
+import { addTask, updateTaskById } from "@front/services/taskService";
 
 type CreateOrUpdateTaskProp = {
   taskToEdit?: Task;
+  idProject: string;
 };
 
 export default function CreateOrUpdateTask({
   taskToEdit,
+  idProject,
 }: CreateOrUpdateTaskProp) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -24,11 +29,16 @@ export default function CreateOrUpdateTask({
   const [status, setStatus] = useState<TaskStatus | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [DashboardProject, setDashboardPrject] = useState<Project[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const myModal = () => document.querySelector<HTMLDialogElement>("#my_modal");
+  const myModal = () => document.getElementById(id) as HTMLDialogElement;
 
   const showModal = () => {
     myModal()?.showModal();
+  };
+
+  const dismissModal = () => {
+    myModal()?.close();
   };
 
   useEffect(() => {
@@ -49,28 +59,36 @@ export default function CreateOrUpdateTask({
     }
   }, [taskToEdit]);
 
-  const handleSubmit = (e: SubmitEvent) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
-    const assignees: Partial<TaskAssignee>[] = selectedUsers.map((user) => ({
-      userId: user.id,
-    }));
+    setIsSubmitting(true);
 
-    if (taskToEdit) {
-      console.log("Enregistrer la tâche modifiée :", {
-        title,
+    try {
+      const assignees: Partial<TaskAssignee>[] = selectedUsers.map((user) => ({
+        userId: user.id,
+      }));
+
+      const input: TaskInput = {
         description,
-        dueDate,
-        status,
-        assignees,
-      });
-    } else {
-      console.log("Créer une tâche :", {
-        title,
-        description,
-        dueDate,
-        status,
-        assignees,
-      });
+        dueDate: new Date(dueDate).toISOString(),
+        status: status ?? "TODO",
+        title: title,
+      };
+      const res: Task | null = !taskToEdit
+        ? await addTask(idProject, input)
+        : await updateTaskById(idProject, taskToEdit!.id, input);
+
+      if (!res) {
+        console.error("Erreur lors de l'enregistrement de la tache");
+        return;
+      } else {
+        location.reload();
+      }
+      dismissModal();
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement de la tache:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -78,14 +96,24 @@ export default function CreateOrUpdateTask({
 
   const isEditMode = !!taskToEdit;
 
+  const id = generateRandomId("task-modal");
+
   return (
     <>
-      <button className="btn text-[16px]" onClick={showModal}>
+      <button className="btn bg-black  h-12.5 text-white " onClick={showModal}>
         Créer une tâche
       </button>
 
-      <dialog id="my_modal" className="modal">
+      <dialog id={id} className="modal">
         <div className="modal-box w-11/12 max-w-lg relative">
+          {isSubmitting && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-neutral-900/50 rounded-2xl">
+              <span
+                className="loading loading-spinner loading-lg text-white"
+                aria-label="Enregistrement en cours"
+              />
+            </div>
+          )}
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕
@@ -104,6 +132,7 @@ export default function CreateOrUpdateTask({
                   type="text"
                   className="input input-bordered w-full"
                   value={title}
+                  required
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </fieldset>
@@ -114,6 +143,7 @@ export default function CreateOrUpdateTask({
                   type="text"
                   className="input input-bordered w-full"
                   value={description}
+                  required
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </fieldset>
@@ -124,6 +154,7 @@ export default function CreateOrUpdateTask({
                   type="date"
                   className="input input-bordered w-full pr-10"
                   value={dueDate}
+                  required
                   onChange={(e) => setDueDate(e.target.value)}
                 />
               </fieldset>
@@ -154,7 +185,7 @@ export default function CreateOrUpdateTask({
                 </div>
               </fieldset>
               <div className="modal-action">
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary btn-outline">
                   {taskToEdit ? "Enregistrer" : "+ Ajouter une tâche"}
                 </button>
               </div>
