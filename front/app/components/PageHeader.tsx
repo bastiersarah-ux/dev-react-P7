@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import styles from "./DashboardHeader.module.css";
+import styles from "./PageHeader.module.css";
 import { useAuth } from "@front/context/AuthContext";
 import Link from "next/link";
+import CreateOrUpdateProject from "./tasks/CreateOrUpdateProject";
 
 type PageHeaderProp = {
   title: string;
@@ -14,14 +15,12 @@ export default function PageHeader({ title, subtitle }: PageHeaderProp) {
   return (
     <div className={styles["dashboard-header-custom"]}>
       <div>
-        <h1 className="text-gray-800 text-2xl font-semibold">{title}</h1>
+        <h2>{title}</h2>
 
-        <p className="text-sm">{subtitle}</p>
+        <h3>{subtitle}</h3>
       </div>
 
-      <button className="btn btn-neutral px-4 py-2 rounded">
-        + Créer un projet
-      </button>
+      <CreateOrUpdateProject />
     </div>
   );
 }

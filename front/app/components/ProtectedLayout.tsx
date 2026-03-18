@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@front/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -9,14 +10,14 @@ export default function ProtectedLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      // replace pour ne pas empiler l'historique
+    if (isLoading) return;
+    if (!isAuthenticated) {
       router.replace("/auth/login");
     }
-  }, [router]);
+  }, [router, isAuthenticated, isLoading]);
 
   return <>{children}</>;
 }

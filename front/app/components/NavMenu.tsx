@@ -40,7 +40,9 @@ const NavMenu = ({ vertical = false }: NavMenuProps) => {
           <Link
             href={link.href}
             className={`btn btn-ghost ${
-              isActive(link) ? "btn-active text-base-200!" : ""
+              isActive(link)
+                ? "btn-active font-normal text-sm text-base-200!"
+                : ""
             }`}
           >
             <div

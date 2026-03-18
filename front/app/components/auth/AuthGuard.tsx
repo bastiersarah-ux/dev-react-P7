@@ -25,12 +25,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [pathname, router, isAuthenticated, isLoading]);
 
-  if (isLoading || (!isAuthenticated && !isAuthPage))
-    return (
-      <div className="w-full flex-1 flex items-center justify-center">
-        <span className="loading w-1/10 loading-spinner text-primary loading-xl"></span>
-      </div>
-    );
+  if (isLoading || (!isAuthenticated && !isAuthPage)) return null;
 
   return <>{children}</>;
 }

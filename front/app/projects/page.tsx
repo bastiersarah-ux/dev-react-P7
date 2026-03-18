@@ -26,9 +26,9 @@ export default function ProjectPage() {
 
   return (
     <>
-      <main className="max-w-5xl mx-auto px-6">
+      <div className="w-full px-6">
         <PageHeader title="Mes projets" subtitle="Gérez vos projets" />
-      </main>
+      </div>
       <div className="grid grid-cols-3 gap-3">
         {dashboardProjects.map((project) => {
           const { done, total, percentage } = getProgression(project.tasks);
@@ -51,62 +51,63 @@ export default function ProjectPage() {
             ) ?? [];
 
           return (
-            <Link
-              href={`/projects/${project.id}`}
-              key={project.id}
-              className="card p-5 no-link bg-white"
-            >
-              <span>{project.name}</span>
-              <span>{project.description}</span>
-
-              {total > 0 && (
-                <>
-                  <div className="flex justify-between mb-2 text-sm font-medium">
-                    <span>Progression</span>
-                    <span>{percentage}%</span>
-                  </div>
-                  <progress
-                    className="progress w-full bg-gray-200"
-                    value={percentage}
-                    max={100}
-                  />
-                  <p className="text-sm mt-2 text-gray-600">
-                    {done}/{total} tâches terminées
-                  </p>
-                </>
-              )}
-
-              {total === 0 && <p>Aucune tâche pour ce projet</p>}
-              <div className="flex flex-col items-center gap-2">
-                <Image
-                  src={TeamIcon}
-                  alt="Icône équipe"
-                  width={11.58}
-                  height={11}
-                />
-                <span className="text-sm font-medium">
-                  Équipe ({members.length ?? 0})
-                </span>
-                <div className="flex justify-center items-center gap-2">
-                  {members.map((member) => (
-                    <UserInitialsButton
-                      key={member.id}
-                      user={member.user}
-                      variant={member.role == "OWNER" ? "Variant3" : "Variant2"}
-                      showFull={member.role === "OWNER"}
-                    />
-                  ))}
+            <div>
+              <Link
+                href={`/projects/${project.id}`}
+                key={project.id}
+                className="card p-5 gap-14 no-link bg-white"
+              >
+                <div>
+                  <h3>{project.name}</h3>
+                  <h4>{project.description}</h4>
                 </div>
-              </div>
-            </Link>
+
+                {total > 0 && (
+                  <div>
+                    <div className="flex justify-between">
+                      <h5>Progression</h5>
+                      <span>{percentage}%</span>
+                    </div>
+                    <progress
+                      className="progress w-full bg-gray-200"
+                      value={percentage}
+                      max={100}
+                    />
+                    <h6>
+                      {done}/{total} tâches terminées
+                    </h6>
+                  </div>
+                )}
+
+                {total === 0 && <p>Aucune tâche pour ce projet</p>}
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={TeamIcon}
+                      alt="Icône équipe"
+                      width={11.58}
+                      height={11}
+                    />
+                    <h6>Équipe ({members.length ?? 0})</h6>
+                  </div>
+                  <div className="flex gap-2 h-6.75">
+                    {members.map((member) => (
+                      <UserInitialsButton
+                        key={member.id}
+                        user={member.user}
+                        variant={
+                          member.role == "OWNER" ? "Variant3" : "Variant2"
+                        }
+                        showFull={member.role === "OWNER"}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </Link>
+            </div>
           );
         })}
       </div>
     </>
   );
 }
-
-// const members = data
-//   .flatMap((project) => project.members!)
-//   .filter((member) => !!member);
-// setProjectMembers(members);

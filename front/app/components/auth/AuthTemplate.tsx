@@ -9,8 +9,6 @@ import AbricotIcon from "@front/public/logo-abricot.svg";
 import { TokenResponse } from "@front/types/api-types";
 import { useAuth } from "@front/context/AuthContext";
 
-export const tokenKey = "auth-key";
-
 type AuthTemplateProps = {
   isLogin: boolean;
   onSubmit: (email: string, password: string) => Promise<TokenResponse | null>;
@@ -36,7 +34,7 @@ export default function AuthTemplate(props: AuthTemplateProps) {
     ) {
       const res = await props.onSubmit(email, password);
       if (res) {
-        login(res.token, res.user);
+        login(res.user);
       }
     }
   }

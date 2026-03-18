@@ -1,8 +1,10 @@
 "use client";
 
 import { SubmitEvent, useEffect, useState } from "react";
-import { Project, User } from "@front/types/api-types";
+import { Project, ProjectInput, User } from "@front/types/api-types";
 import UserSelector from "../users/UserSelector";
+import { createProject, updateProject } from "@front/services/projectsService";
+import { useRouter } from "next/navigation";
 
 type CreateOrUpdateProjectProp = {
   projectToEdit?: Project | null;
@@ -11,6 +13,7 @@ type CreateOrUpdateProjectProp = {
 export default function CreateOrUpdateProject({
   projectToEdit,
 }: CreateOrUpdateProjectProp) {
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
@@ -19,6 +22,10 @@ export default function CreateOrUpdateProject({
 
   const showModal = () => {
     myModal()?.showModal();
+  };
+
+  const dismissModal = () => {
+    myModal()?.close();
   };
 
   useEffect(() => {
@@ -39,19 +46,26 @@ export default function CreateOrUpdateProject({
     }
   }, [projectToEdit]);
 
-  const handleSubmit = (e: SubmitEvent) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
-    if (projectToEdit) {
-      console.log("Enregistrer le projet modifié", {
-        title,
-        description,
-      });
+    const input: ProjectInput = {
+      name: title,
+      description,
+      contributors: selectedUsers.map((user) => user.email) ?? [],
+    };
+
+    const res: Project | null = projectToEdit
+      ? await updateProject(projectToEdit.id, input)
+      : await createProject(input);
+    if (!res) {
+      return;
+    } else if (!projectToEdit && res.id) {
+      router.push(`/projects/${res.id}`);
     } else {
-      console.log("Créer un projet", {
-        title,
-        description,
-      });
+      location.reload();
     }
+
+    dismissModal();
   };
 
   const isEditMode = !!projectToEdit;
@@ -59,7 +73,7 @@ export default function CreateOrUpdateProject({
   return (
     <>
       <button
-        className={`btn ${isEditMode && "btn-link text-primary"} `}
+        className={`btn ${isEditMode ? "btn-link text-primary" : "bg-black text-white"} font-normal text-base px-4 py-1 rounded-[10px]`}
         onClick={showModal}
       >
         {isEditMode ? "Modifier" : "+ Créer un projet"}

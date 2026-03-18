@@ -1,3 +1,5 @@
+import nextConfig from "./../next.config";
+
 export type LoginForm = {
   email: string;
   password: string;
@@ -15,6 +17,16 @@ export type User = {
   name: string;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type UpdateProfileInput = {
+  name?: string;
+  email?: string;
+};
+
+export type UpdatePasswordInput = {
+  currentPassword: string;
+  newPassword: string;
 };
 
 export type TokenResponse = {
@@ -96,6 +108,20 @@ export type TaskInput = {
   status?: TaskStatus;
   priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
   dueDate?: string;
+};
+
+export type ProjectInput = {
+  name: string;
+  description?: string;
+  contributors?: string[];
+};
+
+export type AddContributorInput = {
+  userId: number;
+  projectId: number;
+  email?: string;
+  name?: string;
+  role: "CONTRIBUTOR" | "ADMIN";
 };
 
 export type ErrorResponse = {

@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import styles from "./Account.module.css";
 import { User } from "@front/types/api-types";
 
-export const tokenKey = "auth-key";
-
 type AccountProps = {
   user: User | null;
   onSubmit: (
@@ -50,7 +48,7 @@ export default function UpdateMyAccount(props: AccountProps) {
     >
       <div className="card w-full max-w-md bg-base-100 shadow-xl">
         <div className="card-body">
-          <h1 className="card-title">Mon compte</h1>
+          <h3 className="card-title">Mon compte</h3>
           <p className="text-base mb-4">
             {firstName} {lastName}
           </p>

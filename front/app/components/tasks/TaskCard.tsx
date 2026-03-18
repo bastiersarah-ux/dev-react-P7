@@ -11,36 +11,47 @@ type TaskCardProps = {
 
 export default function TaskCard({ task }: TaskCardProps) {
   return (
-    <div className="border rounded-lg p-4 flex justify-between items-center">
+    <div className="border border-gray-200 rounded-lg p-4 flex justify-between items-center">
       <div>
         <h3 className="font-semibold">{task.title}</h3>
 
-        <p className="text-sm text-gray-500">{task.description}</p>
+        <h4 className="text-sm text-gray-600">{task.description}</h4>
 
-        <div className="flex gap-4 text-xs text-gray-400 mt-2">
-          <Image src={ProjectsIcon} alt="Icône projet" className="w-4 h-4" />
-          <span>{task.project.name}</span>
+        <div className="flex gap-2 text-xs text-gray-600 mt-2">
+          <Image
+            src={ProjectsIcon}
+            alt="Icône projet"
+            className="w-3.75 h-3.75"
+          />
+          <h5>{task.project.name} |</h5>
           <Image
             src={CalendarIcon}
             alt="Icône calendrier"
-            className="w-4 h-4"
+            className="w-3.75 h-3.75"
           />
           {task.dueDate && (
-            <span>{new Date(task.dueDate).toLocaleDateString()}</span>
+            <h5>
+              {new Date(task.dueDate).toLocaleDateString("fr-FR", {
+                day: "numeric",
+                month: "long",
+              })}
+            </h5>
           )}
           <Image
             src={CommentsIcon}
             alt="Icône commentaires"
-            className="w-4 h-4"
+            className="w-3.75 h-3.75"
           />
-          <span>{task.comments?.length ?? 0}</span>
+          <h5>{task.comments?.length ?? 0}</h5>
         </div>
       </div>
 
       <div className="flex flex-col items-end gap-2">
         <StatusBadge status={task.status} />
 
-        <button className="bg-black text-white px-4 py-1 rounded">Voir</button>
+        <button className="bg-black text-white px-6 py-3 rounded-[10px]">
+          Voir
+        </button>
       </div>
     </div>
   );

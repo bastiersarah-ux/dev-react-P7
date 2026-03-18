@@ -33,8 +33,8 @@ export default function TaskKanban({ tasks }: TaskViewProp) {
       {columns.map((column) => (
         <div className="card bg-white px-5 py-5 gap-5" key={column.name}>
           <div className="flex items-center gap-2.5">
-            <span>{column.name}</span>
-            <span className="badge badge-soft badge-neutral">
+            <h3>{column.name}</h3>
+            <span className="badge badge-soft badge-bg-gray-200 text-gray-600">
               {column.tasks.length}
             </span>
           </div>

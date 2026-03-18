@@ -5,7 +5,6 @@ import Header from "./components/Header";
 import AuthGuard from "./components/auth/AuthGuard";
 import Footer from "./components/Footer";
 import { AuthProvider } from "@front/context/AuthContext";
-import Link from "next/link";
 import NavMenu from "./components/NavMenu";
 
 const geistSans = Geist({

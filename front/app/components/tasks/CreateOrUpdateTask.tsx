@@ -80,7 +80,7 @@ export default function CreateOrUpdateTask({
 
   return (
     <>
-      <button className="btn" onClick={showModal}>
+      <button className="btn text-[16px]" onClick={showModal}>
         Créer une tâche
       </button>
 

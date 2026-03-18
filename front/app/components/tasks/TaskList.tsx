@@ -10,7 +10,7 @@ export default function TaskList({ tasks }: TaskViewProp) {
       <div className="flex justify-between items-center m-px">
         <div className="flex flex-col">
           <h2 className="font-semibold">Mes tâches assignées</h2>
-          <h3>Par ordre de priorité</h3>
+          <h4>Par ordre de priorité</h4>
         </div>
 
         <div className="flex justify-end items-center">

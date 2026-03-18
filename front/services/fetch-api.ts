@@ -1,21 +1,20 @@
-import { TOKEN_KEY } from "@front/context/AuthContext";
 import { SuccessResponse } from "@front/types/api-types";
 
-export const API_URL = "http://localhost:8000";
+export const API_URL = "/api/proxy";
 
 export async function fetchAPI<T = any>(
   path: string,
   options: RequestInit = {},
 ): Promise<T | undefined> {
-  const token = localStorage.getItem(TOKEN_KEY);
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(`${API_URL}${normalizedPath}`, {
     ...options,
     headers: {
       ...options.headers,
-      "Content-Type": "application/json",
-      Authorization: token ? `Bearer ${token}` : "",
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
     },
+    credentials: "include",
   });
 
   if (!res.ok) {

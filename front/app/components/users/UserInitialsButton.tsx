@@ -31,7 +31,7 @@ export default function UserInitialsButton({
   if (showFull) {
     return (
       <div
-        className={`flex items-center gap-3 justify-center ${fullWidth && "w-full"} h-full min-w-4 `}
+        className={`flex items-center gap-3 justify-center ${fullWidth && "w-full"} h-full`}
       >
         <span
           className={`btn btn-circle border-none ${styles.userIcon} ${cssClass} ${fullWidth && "w-full"} h-full`}
@@ -39,7 +39,7 @@ export default function UserInitialsButton({
           {getInitials(user!.name ?? "")}
         </span>
         <span
-          className={`btn btn-circle border-none ${styles.userIcon} w-auto px-5 ${cssClassFull} capitalize!`}
+          className={`btn btn-circle border-none ${styles.userIcon} w-auto px-5 ${cssClassFull} capitalize! h-full`}
         >
           {fullName}
         </span>

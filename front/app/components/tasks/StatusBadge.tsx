@@ -15,8 +15,7 @@ export default function StatusBadge({
 }: StatusBadgeProp) {
   const styles: Record<TaskStatus, string> = {
     TODO: "bg-[var(--color-error)] text-[var(--color-error-content)]",
-    IN_PROGRESS:
-      "bg-[var(--color-warning)] text-[var(--color-warning-content)]",
+    IN_PROGRESS: "bg-[var(--color-accent)] text-[var(--color-accent-content)]",
     DONE: "bg-[var(--color-success)] text-[var(--color-success-content)]",
     CANCELLED: "bg-gray-200)] text bg-gray-400]",
   };
@@ -31,7 +30,7 @@ export default function StatusBadge({
   if (formMode && onSelect) {
     return (
       <input
-        className={`btn btn-ghost btn-badge ${styles[status]}`}
+        className={`btn btn-ghost btn-badge rounded-[50px] ${styles[status]}`}
         type="radio"
         name="status"
         checked={isChecked ?? false}
@@ -42,7 +41,7 @@ export default function StatusBadge({
   }
 
   return (
-    <span className={`text-xs px-3 py-1 rounded ${styles[status]}`}>
+    <span className={`text-xs px-3 py-1 rounded-[50px] ${styles[status]}`}>
       {labels[status]}
     </span>
   );

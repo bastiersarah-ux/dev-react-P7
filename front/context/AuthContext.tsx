@@ -13,66 +13,60 @@ import { fetchAPI } from "@front/services/fetch-api";
 
 type AuthContextType = {
   user: User | null;
-  token: string | null;
-  login: (token: string, userData: User) => void;
-  logout: () => void;
+  login: (userData: User) => void;
+  logout: () => Promise<void>;
   isAuthenticated: boolean;
   isLoading: boolean;
 };
 
-export const TOKEN_KEY = "abricot_token";
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const fetchUser = async (jwt: string) => {
+  const fetchUser = async () => {
     try {
       setIsLoading(true);
-      const res = await fetchAPI<{ user: User }>("/auth/profile", {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
-      setUser(res!.user);
-    } catch {
-      logout();
+      const res = await fetchAPI<{ user: User }>("/auth/profile");
+      if (res?.user) {
+        setUser(res.user);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Erreur de récupération du profil:", error);
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    if (storedToken) {
-      setToken(storedToken);
-      fetchUser(storedToken);
-    } else {
-      setIsLoading(false);
-    }
+    fetchUser();
   }, []);
 
-  const login = (jwt: string, userData: User) => {
-    localStorage.setItem(TOKEN_KEY, jwt);
-    setToken(jwt);
+  const login = (userData: User) => {
     setUser(userData);
   };
 
-  const logout = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    setToken(null);
-    setUser(null);
-    router.push("/auth/login");
+  const logout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+    } finally {
+      setUser(null);
+      router.push("/auth/login");
+    }
   };
 
-  const isAuthenticated = !!token;
+  const isAuthenticated = !!user;
 
   return (
     <AuthContext.Provider
-      value={{ user, token, login, logout, isAuthenticated, isLoading }}
+      value={{ user, login, logout, isAuthenticated, isLoading }}
     >
       {children}
     </AuthContext.Provider>

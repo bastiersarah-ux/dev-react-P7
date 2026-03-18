@@ -7,19 +7,22 @@ import UserInitialsButton from "../../components/users/UserInitialsButton";
 import { useTasksOfProject } from "@front/hooks/useTaskOfProject";
 import { useDashboardProjects } from "@front/hooks/useDashboardProjects";
 import SearchBar from "@front/app/components/tasks/SearchBar";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import ListIcon from "@front/public/list-icon.svg";
 import CalendarIcon from "@front/public/orange-calendar-icon.svg";
 import ArrowLeftIcon from "@front/public/arrow-left.svg";
 import Image from "next/image";
-import { TaskStatus } from "@front/types/api-types";
+import { ProjectMember, TaskStatus } from "@front/types/api-types";
 import Link from "next/link";
 import CreateOrUpdateTask from "@front/app/components/tasks/CreateOrUpdateTask";
 import CreateOrUpdateProject from "@front/app/components/tasks/CreateOrUpdateProject";
 import { useProjectById } from "@front/hooks/useProject";
+import ListAiTask from "@front/app/components/tasks/ListAiTask";
+import { getProjectMemberWithRealRole } from "@front/helpers/project-helper";
 
 export default function ProjectDetail() {
   const params = useParams();
+  const [members, setMembers] = useState<ProjectMember[]>([]);
   const { project } = useProjectById(String(params.id));
   const { tasksOfProject } = useTasksOfProject(String(params.id));
   const [currentTab, setCurrentTab] = useState<"list" | "calendar">("list");
@@ -34,6 +37,14 @@ export default function ProjectDetail() {
     DONE: "Terminé",
     CANCELLED: "Annulé",
   };
+
+  useEffect(() => {
+    if (project) {
+      setMembers(getProjectMemberWithRealRole(project));
+    } else {
+      setMembers([]);
+    }
+  }, [project]);
 
   return (
     <>
@@ -53,7 +64,7 @@ export default function ProjectDetail() {
           </div>
           <div className="flex gap-2 flex-1 justify-end">
             <CreateOrUpdateTask />
-            <button className="btn btn-primary">IA</button>
+            <ListAiTask />
           </div>
         </div>
 
@@ -61,26 +72,30 @@ export default function ProjectDetail() {
           <div className="flex-1 gap-2 flex items-center">
             <span className="font-semibold">Contributeurs</span>
             <span className="text-sm opacity-60">
-              {project?.members?.length} personnes
+              {members.length} personnes
             </span>
           </div>
+          <div className="flex items-center gap-2">
+            {members
+              .filter((member) => member.role === "OWNER")
+              .map((member) => (
+                <div key={member.id} className="flex items-center gap-2 h-6.75">
+                  <UserInitialsButton user={member.user} showFull />
+                </div>
+              ))}
 
-          {project?.members
-            ?.filter((member) => member.role === "OWNER")
-            .map((member) => (
-              <div key={member.id} className="flex items-center gap-2">
-                <UserInitialsButton user={member.user} />
-                <span className="badge badge-warning">Propriétaire</span>
-              </div>
-            ))}
-
-          {project?.members
-            ?.filter((member) => member.role !== "OWNER")
-            .map((member) => (
-              <div key={member.id} className="flex items-center gap-2">
-                <UserInitialsButton user={member.user} showFull />
-              </div>
-            ))}
+            {members
+              .filter((member) => member.role !== "OWNER")
+              .map((member) => (
+                <div key={member.id} className="flex items-center gap-2 h-6.75">
+                  <UserInitialsButton
+                    user={member.user}
+                    showFull
+                    variant={"Variant2"}
+                  />
+                </div>
+              ))}
+          </div>
         </div>
 
         <div className="mx-30 card bg-white shadow-md p-6 space-y-6">
@@ -145,77 +160,99 @@ export default function ProjectDetail() {
                   </option>
                 ))}
               </select>
-              <div className="h-full">
+              <div>
                 <SearchBar />
               </div>
             </div>
           </div>
 
           {tasksOfProject?.map((task) => (
-            <div key={task.id} className="card p-5 no-link bg-white">
-              <div>
-                <span>{task.title}</span>
-                <StatusBadge status={task.status} />
+            <div
+              key={task.id}
+              className="card card-border border-gray-200 px-6.25 py-10 no-link bg-white"
+            >
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <span>{task.title}</span>
+                  <StatusBadge status={task.status} />
+                </div>
+
+                <span>{task.description}</span>
               </div>
+              <span>
+                Échéance : {new Date(task.dueDate!)?.toLocaleDateString()}
+              </span>
 
-              <span>{task.description}</span>
-              <span>{new Date(task.dueDate!)?.toLocaleDateString()}</span>
-
-              <div>
+              <div className="flex items-center gap-5 h-6.75">
                 <span>Assigné à :</span>
-                {(task.assignees ?? []).map((assignee) => (
-                  <UserInitialsButton
-                    key={assignee.user?.id}
-                    user={assignee.user}
-                    showFull
-                  />
-                ))}
-              </div>
-
-              <div className="w-full max-w-3xl mx-auto p-4 bg-base-100 rounded-xl shadow">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="font-semibold text-lg">
-                    Commentaires ({task.comments?.length ?? 0})
-                  </span>
-                </div>
-
-                <div className="space-y-4">
-                  {task.comments?.map((comment) => (
-                    <div key={comment.id} className="flex gap-3">
-                      <div className="bg-neutral text-neutral-content rounded-full w-14 h-14">
-                        <UserInitialsButton user={comment.author} />
-                      </div>
-
-                      <div className="flex-1 bg-base-200 rounded-xl p-3">
-                        <div className="flex justify-between text-sm">
-                          <span className="font-medium">
-                            {comment.author?.name}
-                          </span>
-                          <span className="text-gray-400">
-                            {new Date(comment.createdAt!)?.toLocaleDateString()}
-                          </span>
-                        </div>
-                        <p className="text-sm mt-1">{comment.content}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex gap-3 mt-6">
-                  <div className="w-18 h-14">
+                {(task.assignees ?? []).map((assignee) => {
+                  const isOwner =
+                    members.find(
+                      (member) => member.user.id == assignee.user?.id,
+                    )?.role == "OWNER";
+                  return (
                     <UserInitialsButton
-                      key={project?.owner?.id}
-                      user={project?.owner}
+                      key={assignee.user?.id}
+                      user={assignee.user}
+                      showFull
+                      variant={!isOwner ? "Variant2" : null}
                     />
-                  </div>
-                  <input
-                    type="text"
-                    className="input bg-white h-15 w-full"
-                    placeholder="Ajouter un commentaire..."
-                  />
-                  <button className="btn btn-primary">Envoyer</button>
-                </div>
+                  );
+                })}
               </div>
+              <div className="divider"></div>
+              <details className="collapse collapse-arrow w-full">
+                <summary className="collapse-title p-0">
+                  Commentaires ({task.comments?.length ?? 0})
+                </summary>
+                <div className="collapse-content mt-6">
+                  <div className="space-y-4">
+                    {task.comments?.map((comment) => (
+                      <div key={comment.id} className="flex gap-3">
+                        <div className="bg-neutral text-neutral-content rounded-full w-14 h-14">
+                          <UserInitialsButton user={comment.author} fullWidth />
+                        </div>
+
+                        <div className="flex-1 bg-gray-100 rounded-xl p-3">
+                          <div className="flex justify-between text-sm">
+                            <span className="font-medium">
+                              {comment.author?.name}
+                            </span>
+                            <span className="text-gray-400 text-[10px]">
+                              {new Date(comment.createdAt!)?.toLocaleDateString(
+                                "fr-FR",
+                                {
+                                  day: "numeric",
+                                  month: "long",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}
+                            </span>
+                          </div>
+                          <p className="text-sm mt-1">{comment.content}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex gap-3 mt-6 items-center">
+                    <div className="w-18 h-14">
+                      <UserInitialsButton
+                        key={project?.owner?.id}
+                        user={project?.owner}
+                        fullWidth
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      className="input bg-gray-50 h-15 w-full"
+                      placeholder="Ajouter un commentaire..."
+                    />
+                    <button className="btn btn-primary">Envoyer</button>
+                  </div>
+                </div>
+              </details>
             </div>
           ))}
         </div>

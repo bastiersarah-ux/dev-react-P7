@@ -1,3 +1,10 @@
+import { fetchAPI } from "@front/services/fetch-api";
+import {
+  User,
+  UpdateProfileInput,
+  UpdatePasswordInput,
+} from "@front/types/api-types";
+
 export function getInitials(name?: string) {
   if (!name) return "";
   return name
@@ -6,3 +13,28 @@ export function getInitials(name?: string) {
     .join("")
     .toUpperCase();
 }
+
+export const getProfile = async (): Promise<User | null> => {
+  const res = await fetchAPI<{ user: User }>("/auth/profile");
+  return res?.user ?? null;
+};
+
+export const updateProfile = async (
+  data: UpdateProfileInput,
+): Promise<User | null> => {
+  const res = await fetchAPI<{ user: User }>("/auth/profile", {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+  return res?.user ?? null;
+};
+
+export const updatePassword = async (
+  data: UpdatePasswordInput,
+): Promise<boolean> => {
+  const res = await fetchAPI("/auth/password", {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+  return res?.success ?? false;
+};
