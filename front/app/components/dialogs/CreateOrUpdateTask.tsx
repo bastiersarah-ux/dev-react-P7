@@ -11,7 +11,6 @@ import {
 import { SubmitEvent, useEffect, useState } from "react";
 import { User } from "@front/types/api-types";
 import UserSelector from "../users/UserSelector";
-import { generateRandomId } from "@front/helpers/project-helper";
 import { addTask, updateTaskById } from "@front/services/taskService";
 
 type CreateOrUpdateTaskProp = {
@@ -64,16 +63,15 @@ export default function CreateOrUpdateTask({
     setIsSubmitting(true);
 
     try {
-      const assignees: Partial<TaskAssignee>[] = selectedUsers.map((user) => ({
-        userId: user.id,
-      }));
+      const assignees = selectedUsers.map((user) => user?.id);
 
       const input: TaskInput = {
         description,
         dueDate: new Date(dueDate).toISOString(),
-        status: status ?? "TODO",
         title: title,
+        assigneeIds: assignees,
       };
+
       const res: Task | null = !taskToEdit
         ? await addTask(idProject, input)
         : await updateTaskById(idProject, taskToEdit!.id, input);
@@ -96,7 +94,10 @@ export default function CreateOrUpdateTask({
 
   const isEditMode = !!taskToEdit;
 
-  const id = generateRandomId("task-modal");
+  // Stable dialog id between server and client to prevent hydration mismatches.
+  const id = taskToEdit
+    ? `task-modal-${taskToEdit.id}`
+    : `task-modal-${idProject}-new`;
 
   return (
     <>

@@ -108,6 +108,7 @@ export type TaskInput = {
   status?: TaskStatus;
   priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
   dueDate?: string;
+  assigneeIds?: string[];
 };
 
 export type ProjectInput = {

@@ -5,7 +5,6 @@ import { Project, ProjectInput, User } from "@front/types/api-types";
 import UserSelector from "../users/UserSelector";
 import { createProject, updateProject } from "@front/services/projectsService";
 import { useRouter } from "next/navigation";
-import { generateRandomId } from "@front/helpers/project-helper";
 
 type CreateOrUpdateProjectProp = {
   projectToEdit?: Project | null;
@@ -80,7 +79,10 @@ export default function CreateOrUpdateProject({
 
   const isEditMode = !!projectToEdit;
 
-  const id = generateRandomId("project-modal");
+  // Keep dialog id stable between SSR and client to avoid hydration mismatch.
+  const id = projectToEdit
+    ? `project-modal-${projectToEdit.id}`
+    : "project-modal-new";
 
   return (
     <>
