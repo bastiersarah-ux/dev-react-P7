@@ -127,6 +127,7 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 								value={title}
 								required
 								onChange={(e) => setTitle(e.target.value)}
+								aria-label='Titre de la tâche'
 							/>
 						</fieldset>
 
@@ -138,6 +139,7 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 								value={description}
 								required
 								onChange={(e) => setDescription(e.target.value)}
+								aria-label='Description de la tâche'
 							/>
 						</fieldset>
 
@@ -149,6 +151,7 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 								value={dueDate}
 								required
 								onChange={(e) => setDueDate(e.target.value)}
+								aria-label="Date d'échéance"
 							/>
 						</fieldset>
 
@@ -157,7 +160,13 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 						<fieldset className='fieldset'>
 							<legend className='fieldset-legend'>Statut</legend>
 							<div className='filter'>
-								<input className='btn btn-ghost text-[17px] btn-badge' type='reset' value='×' onClick={() => setStatus(null)} />
+								<input
+									className='btn btn-ghost text-[17px] btn-badge'
+									type='reset'
+									value='×'
+									onClick={() => setStatus(null)}
+									aria-label='Réinitialiser le statut'
+								/>
 								{statusList.map((s) => (
 									<StatusBadge key={s} status={s} formMode onSelect={(value) => setStatus(value)} isChecked={status === s} />
 								))}
@@ -185,7 +194,16 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 					Créer une tâche
 				</button>
 			) : (
-				<a href='' className='p-4 text-black! no-underline!' onClick={showModal}>
+				<a
+					href='#'
+					className='p-4 text-black! no-underline!'
+					onClick={showModal}
+					onKeyDown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							showModal(e as unknown as MouseEvent<unknown, unknown>);
+						}
+					}}>
 					Modifier
 				</a>
 			)}

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import ClientProviders from './client-providers';
+import DrawerOverlay from './components/DrawerOverlay';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import NavMenu from './components/NavMenu';
@@ -26,10 +27,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		<html lang='fr' data-theme='abricot'>
 			<body className={`${geistSans.variable} ${geistMono.variable}`}>
 				{/* Input toggle doit être directement sous body */}
-
+				<h1 className='hidden'>Abricot</h1>
 				<ClientProviders>
 					<div className='drawer drawer-mobile h-full'>
-						<input id='drawer-toggle' type='checkbox' className='drawer-toggle' />
+						<input id='drawer-toggle' type='checkbox' className='drawer-toggle' aria-label='Menu de navigation' />
 						<div className='drawer-content flex flex-col'>
 							<Header />
 							{children}
@@ -37,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						</div>
 
 						<div className='drawer-side'>
-							<label htmlFor='drawer-toggle' className='drawer-overlay'></label>
+							<DrawerOverlay />
 							<div className='p-4 w-64 h-full bg-base-200 text-base-content'>
 								<NavMenu vertical />
 							</div>

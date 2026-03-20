@@ -13,7 +13,7 @@
 
 	&.initial {
 		width: var(--initial-size, 100%);
-		font-size: 10px;
+		font-size: var(--text-size);
 	}
 
 	&.userIconVariant1 {

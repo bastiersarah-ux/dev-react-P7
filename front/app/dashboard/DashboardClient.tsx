@@ -27,7 +27,8 @@ export default function DashboardClient({ tasks, userName }: Props) {
 		<main className='md:px-25 md:py-20 sm p-5 flex-1'>
 			<PageHeader title='Tableau de bord' subtitle={`Bonjour ${userName ?? ''}, voici un aperçu de vos projets et tâches`} />
 
-			<div className='join gap-4 h-11.25 my-6'>
+			<fieldset className='join gap-4 h-11.25 my-6'>
+				<legend className='hidden'>Affichage</legend>
 				<label
 					htmlFor='tab-list'
 					className={`join-item rounded-lg px-3.5 py-4 h-full btn flex items-center text-(--color-warning-content) gap-2 ${
@@ -63,7 +64,7 @@ export default function DashboardClient({ tasks, userName }: Props) {
 					onChange={onChange}
 					className='hidden'
 				/>
-			</div>
+			</fieldset>
 			{currentTab === 'list' ? <TaskList tasks={tasks} /> : <TaskKanban tasks={tasks} />}
 		</main>
 	);

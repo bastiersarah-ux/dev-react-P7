@@ -63,19 +63,19 @@ export default function AuthTemplate({ isLogin }: AuthTemplateProps) {
 	}
 
 	return (
-		<div className={`${styles['page-content']} max-md:flex-col`}>
+		<main className={`${styles['page-content']} max-md:flex-col`}>
 			<section className={styles['left-section']}>
 				<Image src={AbricotIcon} alt='Logo Abricot' width={252.57} height={32.17} />
 				<form onSubmit={handleSubmit} className='flex flex-col gap-4'>
 					<h1>{isLogin ? 'Connexion' : 'Inscription'}</h1>
 
 					<fieldset className='fieldset'>
-						<label className='label' htmlFor='email'>
-							Email
-						</label>
+						<legend className='label'>Email</legend>
 						<input
 							id='email'
 							type='text'
+							aria-label='Email'
+							autoComplete='username'
 							className={`input ${fieldErrors.email ? 'input-error' : ''}`}
 							value={email}
 							onChange={(e) => {
@@ -87,13 +87,13 @@ export default function AuthTemplate({ isLogin }: AuthTemplateProps) {
 					</fieldset>
 
 					<fieldset className='fieldset'>
-						<label htmlFor='password' className='label'>
-							Mot de passe
-						</label>
+						<legend className='label'>Mot de passe</legend>
 						<input
 							id='password'
+							aria-label='Mot de passe'
 							className={`input ${fieldErrors.password ? 'input-error' : ''}`}
 							type='password'
+							autoComplete='current-password'
 							value={password}
 							onChange={(e) => {
 								setPassword(e.target.value);
@@ -122,8 +122,8 @@ export default function AuthTemplate({ isLogin }: AuthTemplateProps) {
 			</section>
 
 			<section className={styles['right-section']}>
-				<Image src='/connexion.jpg' alt='Image connexion' className={styles['img']} fill />
+				<Image src='/connexion.jpg' alt='Image connexion' className={styles['img']} fill loading='eager' />
 			</section>
-		</div>
+		</main>
 	);
 }

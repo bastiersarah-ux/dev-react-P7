@@ -84,70 +84,71 @@ export default function AccountForm() {
 	}
 
 	return (
-		<div className={`${styles['page-content']} max-md:flex-col px-25 flex justify-center items-center`}>
+		<main className={`${styles['page-content']} max-md:flex-col px-25 flex justify-center items-center`}>
 			<div className='card card-border border-gray-200 w-full bg-base-200'>
 				<div className='card-body'>
-					<h3 className='card-title'>Mon compte</h3>
+					<h2 className='h3 card-title'>Mon compte</h2>
 					<p className='text-base mb-4'>
 						{firstName} {lastName}
 					</p>
 
 					<form onSubmit={handleSubmit} className='flex flex-col gap-4 w-full'>
 						<fieldset className='fieldset'>
-							<label className='label text-black' htmlFor='lastName'>
-								Nom
-							</label>
+							<legend className='label text-black text-[14px]'>Nom</legend>
 							<input
 								id='lastName'
 								type='text'
 								className='input input-bordered'
 								value={lastName}
+								aria-label='Nom'
 								onChange={(e) => setLastName(e.target.value)}
 							/>
 						</fieldset>
 
 						<fieldset className='fieldset'>
-							<label className='label text-black' htmlFor='firstName'>
-								Prénom
-							</label>
+							<legend className='label text-black text-[14px]'>Prénom</legend>
 							<input
 								id='firstName'
 								type='text'
 								className='input input-bordered'
 								value={firstName}
+								aria-label='Prénom'
 								onChange={(e) => setFirstName(e.target.value)}
 							/>
 						</fieldset>
 
 						<fieldset className='fieldset'>
-							<label className='label text-black' htmlFor='email'>
-								Email
-							</label>
-							<input id='email' type='text' className='input input-bordered' value={email} onChange={(e) => setEmail(e.target.value)} />
+							<legend className='label text-black text-[14px]'>Email</legend>
+							<input
+								id='email'
+								type='text'
+								className='input input-bordered'
+								aria-label='Email'
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+							/>
 						</fieldset>
 
 						<fieldset className='fieldset'>
-							<label htmlFor='currentPassword' className='label text-black'>
-								Mot de passe actuel
-							</label>
+							<legend className='label text-black text-[14px]'>Mot de passe actuel</legend>
 							<input
 								id='currentPassword'
 								type='password'
 								className='input input-bordered'
+								aria-label='Mot de passe actuel'
 								value={currentPassword}
 								onChange={(e) => setCurrentPassword(e.target.value)}
 							/>
 						</fieldset>
 
 						<fieldset className='fieldset'>
-							<label htmlFor='newPassword' className='label text-black'>
-								Nouveau mot de passe
-							</label>
+							<legend className='label text-black text-[14px]'>Nouveau mot de passe</legend>
 							<input
 								id='newPassword'
 								type='password'
 								className={`input input-bordered ${errors.newPassword ? 'input-error' : ''}`}
 								value={newPassword}
+								aria-label='Nouveau mot de passe'
 								onChange={(e) => {
 									setNewPassword(e.target.value);
 									if (errors.newPassword) setErrors({});
@@ -165,6 +166,6 @@ export default function AccountForm() {
 					</form>
 				</div>
 			</div>
-		</div>
+		</main>
 	);
 }

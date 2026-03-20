@@ -48,9 +48,9 @@ export default async function ProjectPage() {
 												<span>{percentage}%</span>
 											</div>
 											<progress className='progress w-full bg-gray-200' value={percentage} max={100} />
-											<h6>
+											<span className='h6'>
 												{done}/{total} tâches terminées
-											</h6>
+											</span>
 										</div>
 									)}
 
@@ -58,7 +58,7 @@ export default async function ProjectPage() {
 									<div className='flex flex-col gap-2 mt-auto'>
 										<div className='flex items-center gap-2'>
 											<Image src={TeamIcon} alt='Icône équipe' width={11.58} height={11} />
-											<h6>Équipe ({members.length ?? 0})</h6>
+											<span className='h6'>Équipe ({members.length ?? 0})</span>
 										</div>
 										<div className='flex gap-2 h-6.75 flex-wrap text-[10px]'>
 											{members

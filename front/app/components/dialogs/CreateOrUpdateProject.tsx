@@ -163,6 +163,7 @@ export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateP
 									className='input input-bordered w-full'
 									value={title}
 									onChange={(e) => setTitle(e.target.value)}
+									aria-label='Titre du projet'
 								/>
 							</fieldset>
 
@@ -174,6 +175,7 @@ export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateP
 									className='input input-bordered w-full'
 									value={description}
 									onChange={(e) => setDescription(e.target.value)}
+									aria-label='Description du projet'
 								/>
 							</fieldset>
 

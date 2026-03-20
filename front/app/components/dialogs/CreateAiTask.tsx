@@ -116,7 +116,7 @@ export default function ListAiTask({ tasks, contributors = [], projectId, onSucc
 	return (
 		<>
 			<button className='btn btn-primary h-12.5 w-23.5' onClick={showModal}>
-				<Image src={StarIcon} alt='AI' width={21} height={21} />
+				<Image src={StarIcon} alt='' width={21} height={21} aria-hidden='true' />
 				IA
 			</button>
 
@@ -132,7 +132,7 @@ export default function ListAiTask({ tasks, contributors = [], projectId, onSucc
 					</form>
 
 					<div className='flex items-center gap-2 mb-6'>
-						<Image src={OrangeStarIcon} alt='AI' width={21} height={21} />
+						<Image src={OrangeStarIcon} alt='' width={21} height={21} aria-hidden='true' />
 						<h3 className='font-bold text-lg'>Vos tâches...</h3>
 					</div>
 					{generated.length > 0 ? (
@@ -168,10 +168,17 @@ export default function ListAiTask({ tasks, contributors = [], projectId, onSucc
 							className='flex-1 bg-transparent outline-none text-sm'
 							value={prompt}
 							onChange={(e) => setPrompt(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter') {
+									e.preventDefault();
+									handleGenerate();
+								}
+							}}
+							aria-label='Décrivez les tâches à générer par IA'
 						/>
 
 						<button onClick={handleGenerate} type='button' className='ml-2 btn btn-circle btn-sm btn-primary' disabled={isGenerating}>
-							<Image src={StarIcon} alt='AI' width={8.4} height={8.4} />
+							<Image src={StarIcon} alt='Generation par IA' width={8.4} height={8.4} />
 						</button>
 					</div>
 				</div>

@@ -152,7 +152,8 @@ export default function ProjectClient({ project, tasks }: Props) {
 						</div>
 
 						<div className='flex items-center gap-4 flex-wrap'>
-							<div className='flex gap-4 h-13 justify-end-safe'>
+							<fieldset className='flex gap-4 h-13 justify-end-safe'>
+								<legend className='hidden'>Affichage</legend>
 								<label
 									htmlFor='tab-list'
 									className={`btn btn-ghost flex h-full font-normal items-center text-[14px] text-(--color-warning-content) gap-2 ${
@@ -176,7 +177,7 @@ export default function ProjectClient({ project, tasks }: Props) {
 									className={`btn btn-ghost flex h-full items-center font-normal text-[14px] text-(--color-warning-content) gap-2 ${
 										currentTab === 'calendar' ? 'bg-(--color-warning) ' : ''
 									}`}>
-									<Image src={OrangeCalendarIcon} alt='Icône calendar' className='w-4 h-4' />
+									<Image src={OrangeCalendarIcon} alt='Vue calendrier' className='w-4 h-4' />
 									Calendrier
 								</label>
 								<input
@@ -188,11 +189,12 @@ export default function ProjectClient({ project, tasks }: Props) {
 									onChange={onChange}
 									className='hidden'
 								/>
-							</div>
+							</fieldset>
 							<select
 								value={statusFilter}
 								onChange={(e) => setStatusFilter(e.target.value as TaskStatus | '')}
-								className='select select-lg h-18 w-31 pr-5 text-[14px] text-gray-600'>
+								className='select select-lg h-18 w-31 pr-5 text-[14px] text-gray-600'
+								aria-label='Filtrer par statut'>
 								<option value=''>Statut</option>
 								{Object.keys(statusList).map((key) => (
 									<option key={key} value={key}>
@@ -226,7 +228,7 @@ export default function ProjectClient({ project, tasks }: Props) {
 							<span className='flex items-center gap-1.5'>
 								<h5>Échéance :</h5>
 								<span className='flex items-center gap-1'>
-									<Image src={CalendarIcon} alt='Icône calendar' className='w-4 h-4' />
+									<Image src={CalendarIcon} alt='' className='w-4 h-4' aria-hidden='true' />
 									{new Date(task.dueDate!)?.toLocaleDateString('fr-FR', {
 										day: 'numeric',
 										month: 'long',
@@ -295,6 +297,7 @@ export default function ProjectClient({ project, tasks }: Props) {
 												type='text'
 												className='input bg-gray-50 h-15 w-full'
 												placeholder='Ajouter un commentaire...'
+												aria-label='Ajouter un commentaire'
 												value={commentInputs[task.id] ?? ''}
 												onChange={(e) => setCommentInputs((prev) => ({ ...prev, [task.id]: e.target.value }))}
 												onKeyDown={(e) => e.key === 'Enter' && handleAddComment(task.id)}
