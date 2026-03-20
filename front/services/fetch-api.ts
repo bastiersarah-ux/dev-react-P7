@@ -1,6 +1,15 @@
 import { SuccessResponse } from "@front/types/api-types";
 
-export const API_URL = "/api/proxy";
+export const API_URL = "/api/proxy"
+export class ValidationError extends Error {
+  errors: Array<{ field: string; message: string }>;
+
+  constructor(message: string, errors: Array<{ field: string; message: string }>) {
+    super(message);
+    this.name = "ValidationError";
+    this.errors = errors;
+  }
+}
 
 export async function fetchAPI<T = any>(
   path: string,
@@ -9,8 +18,6 @@ export async function fetchAPI<T = any>(
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const headers = new Headers(options.headers);
   const isServer = typeof window === "undefined";
-
-  // Base d'origine pour le SSR (client reste en relatif)
   const origin =
     process.env.NEXT_PUBLIC_APP_URL ||
     process.env.APP_URL ||
@@ -21,9 +28,7 @@ export async function fetchAPI<T = any>(
   let url = `${API_URL}${normalizedPath}`;
 
   if (isServer) {
-    // Construire une URL absolue
     url = new URL(url, origin).toString();
-    // Propager tous les cookies entrants (y compris le token) si présents
     try {
       const { headers: nextHeaders } = await import("next/headers");
       const incoming = await nextHeaders();
@@ -32,7 +37,7 @@ export async function fetchAPI<T = any>(
         headers.set("cookie", cookieHeader);
       }
     } catch {
-      // ignore si indisponible (build)
+
     }
   }
 
@@ -64,7 +69,6 @@ export async function fetchAPI<T = any>(
         }`,
       );
     }
-    // Si pas JSON mais OK, on renvoie undefined
     return undefined;
   }
 
@@ -72,12 +76,21 @@ export async function fetchAPI<T = any>(
 
   if (!res.ok) {
     if (res.status === 401 && typeof window !== "undefined") {
-      // Ne pas rediriger si déjà sur la page de login ou register
+
       const currentPath = window.location.pathname;
       if (!currentPath.startsWith("/auth/")) {
         window.location.href = "/auth/login";
       }
     }
+
+    const errorBody = body as { message?: string; data?: { errors?: Array<{ field: string; message: string }> } };
+    if (errorBody.data?.errors && Array.isArray(errorBody.data.errors)) {
+      throw new ValidationError(
+        errorBody.message || "Erreur de validation",
+        errorBody.data.errors
+      );
+    }
+
     throw new Error((body as { message: string })?.message || "Erreur serveur");
   }
 

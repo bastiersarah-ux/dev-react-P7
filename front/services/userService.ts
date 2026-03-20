@@ -1,8 +1,8 @@
 import { fetchAPI } from "@front/services/fetch-api";
 import {
-  User,
-  UpdateProfileInput,
   UpdatePasswordInput,
+  UpdateProfileInput,
+  User,
 } from "@front/types/api-types";
 
 export function getInitials(name?: string) {
@@ -35,10 +35,10 @@ export const updatePassword = async (
   data: UpdatePasswordInput,
   init?: RequestInit,
 ): Promise<boolean> => {
-  const res = await fetchAPI("/auth/password", {
+  await fetchAPI("/auth/password", {
     method: "PUT",
     body: JSON.stringify(data),
     ...init,
   });
-  return res?.success ?? false;
+  return true;
 };

@@ -1,143 +1,145 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;550;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
 
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "daisyui";
 
 @plugin "daisyui/theme" {
-  name: "abricot";
-  default: false;
-  prefersdark: false;
-  color-scheme: "light";
-  --color-base-100: #F9FAFB;
-  --color-base-200: #FFFFFF;
-  --color-base-300: #1F1F1F;
-  --color-base-content: oklch(21% 0.006 285.885);
-  --color-primary: #D3590B;
-  --color-primary-content: #FFFFFF;
-  --color-secondary: #FFE8D9;
-  --color-secondary-content: #D3590B;
-  --color-accent: #FFF0D7;
-  --color-accent-content: #E08D00;
-  --color-neutral: #E5E7EB;
-  --color-neutral-content: #6B7280;
-  --color-info: #E0ECFF;
-  --color-info-content: #3B82F6;
-  --color-success: #F1FFF7;
-  --color-success-content: #27AE60;
-  --color-warning: #FFE8D9;
-  --color-warning-content: #D3590B;
-  --color-error: #FFE0E0;
-  --color-error-content: #EF4444;
-  --radius-selector: 0.5rem;
-  --radius-field: 8px;
-  --radius-box: 0.5rem;
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-  --text-base: 16px;
-  --border: 1px;
-  --depth: 1;
-  --noise: 0;
+	name: 'abricot';
+	default: false;
+	prefersdark: false;
+	color-scheme: 'light';
+	--color-base-100: #f9fafb;
+	--color-base-200: #ffffff;
+	--color-base-300: #1f1f1f;
+	--color-base-content: oklch(21% 0.006 285.885);
+	--color-primary: #d3590b;
+	--color-primary-content: #ffffff;
+	--color-secondary: #ffe8d9;
+	--color-secondary-content: #d3590b;
+	--color-accent: #fff0d7;
+	--color-accent-content: #e08d00;
+	--color-neutral: #e5e7eb;
+	--color-neutral-content: #6b7280;
+	--color-info: #e0ecff;
+	--color-info-content: #3b82f6;
+	--color-success: #f1fff7;
+	--color-success-content: #27ae60;
+	--color-warning: #ffe8d9;
+	--color-warning-content: #d3590b;
+	--color-error: #ffe0e0;
+	--color-error-content: #ef4444;
+	--radius-selector: 0.5rem;
+	--radius-field: 8px;
+	--radius-box: 0.5rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--text-base: 16px;
+	--border: 1px;
+	--depth: 1;
+	--noise: 0;
 }
 
 html,
 body {
-  max-width: 100vw;
-  max-height: 100vh;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  @apply bg-gray-50;
+	max-width: 100vw;
+	max-height: 100vh;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	font-family: 'Inter', sans-serif;
+	font-size: 14px;
+	font-weight: 400;
+	@apply bg-gray-50;
 }
 
 body {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 
-  h1 {
-    font-size: 40px;
-    color: var(--color-primary);
-    font-weight: 700;
-  }
+	h1 {
+		font-size: 40px;
+		color: var(--color-primary);
+		font-weight: 700;
+	}
 
-  h2 {
-    font-size: 24px;
-    color: var(--color-neutral-800);
-    font-weight: 600;
-  }
+	h2 {
+		font-size: 24px;
+		color: var(--color-neutral-800);
+		font-weight: 600;
+	}
 
-  h3 {
-    font-size: 18px;
-    font-weight: 600;
-    font-family: 'Manrope';
-  }
+	h3 {
+		font-size: 18px;
+		font-weight: 600;
+		font-family: 'Manrope';
+	}
 
-  h4 {
-    font-size: 14px;
-    color: var(--color-gray-600);
-  }
+	h4 {
+		font-size: 14px;
+		color: var(--color-gray-600);
+	}
 
-  h5 {
-    font-size: 12px;
-    color: var(--color-gray-600);
-  }
+	h5 {
+		font-size: 12px;
+		color: var(--color-gray-600);
+	}
 
-  h6 {
-    font-size: 10px;
-    color: var(--color-gray-600);
-  }
+	h6 {
+		font-size: 10px;
+		color: var(--color-gray-600);
+	}
 
+	label {
+		font-size: 14px;
+	}
 
-  label {
-    font-size: 14px;
-  }
+	.page-content {
+		flex: 1;
+	}
 
-  .page-content {
-    flex: 1;
-  }
+	a {
+		color: var(--color-primary);
+		text-decoration: underline;
 
-  a {
-    color: var(--color-primary);
-    text-decoration: underline;
+		&.no-link {
+			text-decoration: none;
+			color: unset;
+		}
+	}
 
-    &.no-link {
-      text-decoration: none;
-      color: unset;
-    }
-  }
+	.btn-gray {
+		@apply bg-gray-800;
+		color: white;
+		border-radius: 10px;
+		padding: 13px 74px;
+	}
 
-  .btn-gray {
-    @apply bg-gray-800;
-    color: white;
-    border-radius: 10px;
-    padding: 13px 74px;
-  }
+	.btn-active {
+		--btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-300)), #000 7%);
+	}
 
-  .btn-active {
-    --btn-bg:
-      color-mix(in oklab, var(--btn-color, var(--color-base-300)), #000 7%);
-  }
+	.btn-badge {
+		--radius-field: 10px;
+		--size: 25px;
+	}
 
-  .btn-badge {
-    --radius-field: 10px;
-    --size: 25px;
-  }
+	.grid-with-separator {
+		display: grid;
+		grid-template-columns: repeat(5, auto);
+	}
 
-  .grid-with-separator {
-    display: grid;
-    grid-template-columns: repeat(5, auto);
-  }
+	.input-error {
+		--input-color: var(--color-error-content);
+	}
 }
 
 .btn-drawer-toggle {
-  --btn-bg: transparent;
+	--btn-bg: transparent;
 
-  &:hover {
-    --btn-shadow: unset;
-    --btn-border: transparent;
-  }
+	&:hover {
+		--btn-shadow: unset;
+		--btn-border: transparent;
+	}
 }

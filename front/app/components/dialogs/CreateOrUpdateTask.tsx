@@ -25,12 +25,29 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 
 	const myModal = () => document.getElementById(id) as HTMLDialogElement;
 
+	const resetForm = () => {
+		if (taskToEdit) {
+			setTitle(taskToEdit.title);
+			setDescription(taskToEdit.description || '');
+			setDueDate(taskToEdit.dueDate ? new Date(taskToEdit.dueDate).toISOString().slice(0, 10) : '');
+			setStatus(taskToEdit.status);
+			setSelectedUsers(taskToEdit.assignees?.map((assignee) => assignee.user!).filter(Boolean) || []);
+		} else {
+			setTitle('');
+			setDescription('');
+			setDueDate('');
+			setStatus(null);
+			setSelectedUsers([]);
+		}
+	};
+
 	const showModal = (e: MouseEvent<unknown, unknown>) => {
 		e.preventDefault();
 		myModal()?.showModal();
 	};
 
-	const dismissModal = () => {
+	const dismissModal = (shouldReset = true) => {
+		if (shouldReset) resetForm();
 		myModal()?.close();
 	};
 
@@ -56,6 +73,7 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 				dueDate: new Date(dueDate).toISOString(),
 				title: title,
 				assigneeIds: assignees,
+				status: status ?? 'TODO',
 			};
 
 			const res: Task | null = !taskToEdit ? await addTask(idProject, input) : await updateTaskById(idProject, taskToEdit!.id, input);
@@ -67,7 +85,8 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 				showSuccess(taskToEdit ? 'Tâche modifiée avec succès' : 'Tâche créée avec succès');
 				onSuccess?.();
 			}
-			dismissModal();
+			dismissModal(false);
+			resetForm();
 		} catch (error) {
 			const message = error instanceof Error ? error.message : "Erreur lors de l'enregistrement de la tâche";
 			showError(message);
@@ -91,7 +110,9 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 					</div>
 				)}
 				<form method='dialog'>
-					<button className='btn btn-sm btn-circle btn-ghost absolute right-2 top-2'>✕</button>
+					<button className='btn btn-sm btn-circle btn-ghost absolute right-2 top-2' onClick={() => resetForm()}>
+						✕
+					</button>
 				</form>
 
 				<h3 className='font-bold text-lg mb-4'>{isEditMode ? 'Modifier une tâche' : 'Créer une tâche'}</h3>
@@ -152,7 +173,7 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 			</div>
 
 			<form method='dialog' className='modal-backdrop'>
-				<button>close</button>
+				<button onClick={() => resetForm()}>close</button>
 			</form>
 		</dialog>
 	);

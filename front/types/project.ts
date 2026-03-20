@@ -12,6 +12,7 @@ export type ProjectItem = {
   done: number;
   total: number;
   percentage: number;
+  earliestDueDate?: Date;
 };
 
 export const convertToProjectItemList = (
@@ -59,6 +60,14 @@ export const convertToProjectItemList = (
     const done = project.tasks?.filter((t) => t.status === "DONE").length ?? 0;
     const percentage = total > 0 ? Math.round((done / total) * 100) : 0;
 
+    // Trouver la date d'échéance la plus ancienne parmi les tâches non terminées
+    const dueDates = project.tasks
+      ?.filter((t) => t.dueDate && (t.status === "TODO" || t.status === "IN_PROGRESS"))
+      .map((t) => new Date(t.dueDate!).getTime()) ?? [];
+    const earliestDueDate = dueDates.length > 0
+      ? new Date(Math.min(...dueDates))
+      : undefined;
+
     return {
       id: project.id,
       name: project.name,
@@ -75,6 +84,7 @@ export const convertToProjectItemList = (
       done,
       total,
       percentage,
+      earliestDueDate,
     };
   });
 
@@ -92,9 +102,17 @@ export const convertToProjectItemList = (
         done: item.done || existing.done,
         total: item.total || existing.total,
         percentage: item.percentage || existing.percentage,
+        earliestDueDate: item.earliestDueDate || existing.earliestDueDate,
       });
     }
   }
 
-  return Array.from(byId.values()).sort((a, b) => (a.total < b.total ? 1 : -1));
+  console.log()
+
+  return Array.from(byId.values()).sort((a, b) => {
+    if (!a.earliestDueDate && !b.earliestDueDate) return 0;
+    if (!a.earliestDueDate) return 1;
+    if (!b.earliestDueDate) return -1;
+    return new Date(a.earliestDueDate).getTime() - new Date(b.earliestDueDate).getTime();
+  });
 };

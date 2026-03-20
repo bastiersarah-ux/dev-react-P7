@@ -1,10 +1,10 @@
 'use client';
 
 import { useNotification } from '@front/context/NotificationContext';
-import { createProject, updateProject } from '@front/services/projectsService';
+import { addContributor, createProject, removeContributor, updateProject } from '@front/services/projectsService';
 import { Project, ProjectInput, User } from '@front/types/api-types';
 import { useRouter } from 'next/navigation';
-import { SubmitEvent, useEffect, useState } from 'react';
+import { SubmitEvent, useEffect, useMemo, useState } from 'react';
 import UserSelector from '../users/UserSelector';
 
 type CreateOrUpdateProjectProp = {
@@ -18,14 +18,35 @@ export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateP
 	const [description, setDescription] = useState('');
 	const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const initialMembers = useMemo(() => {
+		return (
+			projectToEdit?.members
+				?.filter((m) => m.role !== 'OWNER')
+				.map((m) => m.user!)
+				.filter(Boolean) ?? []
+		);
+	}, [projectToEdit]);
 
 	const myModal = () => document.querySelector<HTMLDialogElement>('#' + id);
+
+	const resetForm = () => {
+		if (projectToEdit) {
+			setTitle(projectToEdit.name);
+			setDescription(projectToEdit.description || '');
+			setSelectedUsers(initialMembers);
+		} else {
+			setTitle('');
+			setDescription('');
+			setSelectedUsers([]);
+		}
+	};
 
 	const showModal = () => {
 		myModal()?.showModal();
 	};
 
-	const dismissModal = () => {
+	const dismissModal = (shouldReset = true) => {
+		if (shouldReset) resetForm();
 		myModal()?.close();
 	};
 
@@ -40,34 +61,64 @@ export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateP
 		if (projectToEdit) {
 			setTitle(projectToEdit.name);
 			setDescription(projectToEdit.description || '');
-			setSelectedUsers(projectToEdit.members?.map((member) => member.user!).filter(Boolean) || []);
+			setSelectedUsers(initialMembers);
 		}
-	}, [projectToEdit]);
+	}, [projectToEdit, initialMembers]);
 
 	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
 		setIsSubmitting(true);
 		try {
-			const input: ProjectInput = {
-				name: title,
-				description,
-				contributors: selectedUsers.map((user) => user.email) ?? [],
-			};
+			if (projectToEdit) {
+				const input: ProjectInput = {
+					name: title,
+					description,
+				};
 
-			const res: Project | null = projectToEdit ? await updateProject(projectToEdit.id, input) : await createProject(input);
+				const res = await updateProject(projectToEdit.id, input);
+				if (!res) {
+					showError("Erreur lors de l'enregistrement du projet");
+					return;
+				}
 
-			if (!res) {
-				showError("Erreur lors de l'enregistrement du projet");
-				return;
-			} else if (!projectToEdit && res.id) {
-				showSuccess('Projet créé avec succès');
-				router.push(`/projects/${res.id}`);
-			} else {
+				const toRemove = initialMembers.filter((m) => !selectedUsers.some((s) => s.id === m.id));
+				const toAdd = selectedUsers.filter((s) => !initialMembers.some((m) => m.id === s.id));
+
+				for (const user of toRemove) {
+					await removeContributor(projectToEdit.id, user.id);
+				}
+
+				for (const user of toAdd) {
+					await addContributor(projectToEdit.id, {
+						userId: parseInt(user.id),
+						projectId: parseInt(projectToEdit.id),
+						email: user.email,
+						name: user.name,
+						role: 'CONTRIBUTOR',
+					});
+				}
+
 				showSuccess('Projet modifié avec succès');
 				router.refresh();
+			} else {
+				const input: ProjectInput = {
+					name: title,
+					description,
+					contributors: selectedUsers.map((user) => user.email) ?? [],
+				};
+
+				const res = await createProject(input);
+				if (!res) {
+					showError("Erreur lors de l'enregistrement du projet");
+					return;
+				}
+
+				showSuccess('Projet créé avec succès');
+				router.push(`/projects/${res.id}`);
 			}
 
-			dismissModal();
+			dismissModal(false);
+			resetForm();
 		} catch (error) {
 			const message = error instanceof Error ? error.message : "Erreur lors de l'enregistrement du projet";
 			showError(message);
@@ -77,8 +128,6 @@ export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateP
 	};
 
 	const isEditMode = !!projectToEdit;
-
-	// Keep dialog id stable between SSR and client to avoid hydration mismatch.
 	const id = projectToEdit ? `project-modal-${projectToEdit.id}` : 'project-modal-new';
 
 	return (
@@ -97,7 +146,9 @@ export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateP
 						</div>
 					)}
 					<form method='dialog'>
-						<button className='btn btn-sm btn-circle btn-ghost absolute right-2 top-2'>✕</button>
+						<button className='btn btn-sm btn-circle btn-ghost absolute right-2 top-2' onClick={() => resetForm()}>
+							✕
+						</button>
 					</form>
 
 					<h3 className='font-bold text-lg mb-4'>{isEditMode ? 'Modifier un projet' : 'Créer un projet'}</h3>
@@ -138,7 +189,7 @@ export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateP
 				</div>
 
 				<form method='dialog' className='modal-backdrop'>
-					<button>close</button>
+					<button onClick={() => resetForm()}>close</button>
 				</form>
 			</dialog>
 		</>

@@ -1,58 +1,46 @@
-"use client";
+'use client';
 
-import styles from "./UserInitialsButton.module.css";
-import { getInitials } from "@front/services/userService";
-import { UserButtonVariant } from "@front/types/props";
-import { useAuth } from "@front/context/AuthContext";
-import { User } from "@front/types/api-types";
+import { useAuth } from '@front/context/AuthContext';
+import { getInitials } from '@front/services/userService';
+import { User } from '@front/types/api-types';
+import { UserButtonVariant } from '@front/types/props';
+import styles from './UserInitialsButton.module.css';
 
 type UserInitialsButtonProps = {
-  user?: User;
-  variant?: UserButtonVariant;
-  showFull?: boolean;
-  fullWidth?: boolean;
+	user?: User;
+	variant?: UserButtonVariant;
+	showFull?: boolean;
+	size?: string;
+	fullNameAlt?: boolean;
 };
 
-export default function UserInitialsButton({
-  user,
-  variant,
-  showFull,
-  fullWidth,
-}: UserInitialsButtonProps) {
-  const { user: currentUser } = useAuth();
-  if (!currentUser || !user) return null;
+export default function UserInitialsButton({ user, variant, showFull, size, fullNameAlt }: UserInitialsButtonProps) {
+	const { user: currentUser } = useAuth();
+	if (!currentUser || !user) return null;
 
-  const cssClass = !!variant ? styles[`userIcon${variant}`] : "";
-  const cssClassFull =
-    variant == "Variant2" ? styles[`userIcon${variant}`] : "";
+	const cssClass = !!variant ? styles[`userIcon${variant}`] : '';
+	const cssClassFull = variant == 'Variant2' ? styles[`userIcon${variant}`] : '';
 
-  const fullName =
-    currentUser.id == user.id && showFull ? "Propriétaire" : user.name;
+	const fullName = currentUser.id == user.id && showFull && fullNameAlt ? 'Propriétaire' : user.name;
 
-  if (showFull) {
-    return (
-      <div
-        className={`flex flex-wrap items-center gap-3 justify-center ${fullWidth && "w-full"} h-full`}
-      >
-        <span
-          className={`btn btn-circle border-none ${styles.userIcon} ${cssClass} ${fullWidth && "w-full"} h-full`}
-        >
-          {getInitials(user!.name ?? "")}
-        </span>
-        <span
-          className={`btn btn-circle border-none ${styles.userIcon} w-auto px-5 ${cssClassFull} capitalize! h-full`}
-        >
-          {fullName}
-        </span>
-      </div>
-    );
-  }
+	if (showFull) {
+		return (
+			<div
+				className={`flex flex-wrap items-center gap-3 justify-center h-full text-inherit`}
+				style={{ '--initial-size': size ?? '100%' } as React.CSSProperties}>
+				<span className={`btn btn-circle border-none ${styles.initial} ${styles.userIcon} ${cssClass} h-full`}>
+					{getInitials(user!.name ?? '')}
+				</span>
+				<span className={`btn btn-circle border-none ${styles.userIcon} w-auto px-5 ${cssClassFull} capitalize! h-full`}>{fullName}</span>
+			</div>
+		);
+	}
 
-  return (
-    <span
-      className={`btn btn-circle border-none ${styles.userIcon} ${cssClass} ${fullWidth && "w-full"} h-full`}
-    >
-      {getInitials(user!.name ?? "")}
-    </span>
-  );
+	return (
+		<span
+			style={{ '--initial-size': size ?? '100%' } as React.CSSProperties}
+			className={`btn btn-circle border-none ${styles.initial} ${styles.userIcon} ${cssClass} h-full`}>
+			{getInitials(user!.name ?? '')}
+		</span>
+	);
 }
