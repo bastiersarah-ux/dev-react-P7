@@ -60,8 +60,7 @@ export async function fetchAPI<T = any>(
     const text = await res.text();
     if (!res.ok) {
       throw new Error(
-        `Erreur ${res.status} ${res.statusText}${
-          text ? `: ${text.slice(0, 200)}` : ""
+        `Erreur ${res.status} ${res.statusText}${text ? `: ${text.slice(0, 200)}` : ""
         }`,
       );
     }
@@ -73,9 +72,13 @@ export async function fetchAPI<T = any>(
 
   if (!res.ok) {
     if (res.status === 401 && typeof window !== "undefined") {
-      window.location.href = "/auth/login";
+      // Ne pas rediriger si déjà sur la page de login ou register
+      const currentPath = window.location.pathname;
+      if (!currentPath.startsWith("/auth/")) {
+        window.location.href = "/auth/login";
+      }
     }
-    throw new Error((body as any)?.message || "Erreur serveur");
+    throw new Error((body as { message: string })?.message || "Erreur serveur");
   }
 
   return body.data;
