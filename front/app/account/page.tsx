@@ -95,7 +95,20 @@ export default function UpdateMyAccount(props: AccountProps) {
 
             <fieldset className="fieldset">
               <label htmlFor="password" className="label text-black">
-                Mot de passe
+                Ancien mot de passe
+              </label>
+              <input
+                id="password"
+                type="password"
+                className="input input-bordered"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </fieldset>
+
+            <fieldset className="fieldset">
+              <label htmlFor="password" className="label text-black">
+                Nouveau mot de passe
               </label>
               <input
                 id="password"

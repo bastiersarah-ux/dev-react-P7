@@ -64,8 +64,8 @@ export const updateTaskById = async (
 };
 
 export const deleteTaskById = async (
-  projectId: number,
-  taskId: number,
+  projectId: string,
+  taskId: string,
   init?: RequestInit,
 ): Promise<boolean> => {
   const res = await fetchAPI(`/projects/${projectId}/tasks/${taskId}`, {

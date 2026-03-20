@@ -87,7 +87,7 @@ export default function CreateOrUpdateProject({
   return (
     <>
       <button
-        className={`btn ${isEditMode ? "btn-link text-primary" : "bg-black text-white h-[50px]!"} font-normal px-4 py-1 rounded-[10px]`}
+        className={`btn ${isEditMode ? "btn-link text-primary" : "bg-black text-white h-12.5!"} font-normal px-4 py-1 rounded-[10px]`}
         onClick={showModal}
       >
         {isEditMode ? "Modifier" : "+ Créer un projet"}
@@ -96,7 +96,7 @@ export default function CreateOrUpdateProject({
       <dialog id={id} className="modal">
         <div className="modal-box w-11/12 max-w-lg relative">
           {isSubmitting && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-neutral-900/50 rounded-2xl">
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-neutral-500/50">
               <span
                 className="loading loading-spinner loading-lg text-white"
                 aria-label="Enregistrement en cours"

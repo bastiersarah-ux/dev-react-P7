@@ -8,6 +8,7 @@ import ListIcon from "@front/public/list-icon.svg";
 import OrangeCalendarIcon from "@front/public/orange-calendar-icon.svg";
 import CalendarIcon from "@front/public/icon-calendar.svg";
 import ArrowLeftIcon from "@front/public/arrow-left.svg";
+import Menu from "@front/public/menu.svg";
 import Image from "next/image";
 import Link from "next/link";
 import CreateOrUpdateTask from "@front/app/components/dialogs/CreateOrUpdateTask";
@@ -20,6 +21,7 @@ import {
   TaskStatus,
 } from "@front/types/api-types";
 import ListAiTask from "@front/app/components/dialogs/CreateAiTask";
+import TaskMenu from "@front/app/components/tasks/TaskMenu";
 
 type Props = {
   project: Project;
@@ -67,7 +69,14 @@ export default function ProjectClient({ project, tasks }: Props) {
           </div>
           <div className="flex gap-2 flex-1 justify-end items-center">
             <CreateOrUpdateTask idProject={project.id} />
-            <ListAiTask />
+            <ListAiTask
+              projectId={project.id}
+              contributors={
+                members.map((m) => m.user).filter(Boolean) as NonNullable<
+                  ProjectMember["user"]
+                >[]
+              }
+            />
           </div>
         </div>
         <div className="navbar flex-wrap gap-2 bg-gray-100  rounded-box px-4 py-5">
@@ -103,7 +112,7 @@ export default function ProjectClient({ project, tasks }: Props) {
         <div className="card bg-white border border-gray-200 p-6 gap-5">
           <div className="flex items-center gap-4 flex-wrap justify-between w-full">
             <div className="flex flex-col flex-none">
-              <h3 className="font-semibold">Mes tâches assignées</h3>
+              <h3 className="font-semibold">Tâches</h3>
               <h4>Par ordre de priorité</h4>
             </div>
 
@@ -183,6 +192,11 @@ export default function ProjectClient({ project, tasks }: Props) {
                 <div className="flex items-center gap-2">
                   <h3>{task.title}</h3>
                   <StatusBadge status={task.status} />
+                  <TaskMenu
+                    projectId={project.id}
+                    taskId={task.id}
+                    onEdit={() => console.log("ici")}
+                  />
                 </div>
 
                 <h4>{task.description}</h4>

@@ -94,7 +94,6 @@ export default function CreateOrUpdateTask({
 
   const isEditMode = !!taskToEdit;
 
-  // Stable dialog id between server and client to prevent hydration mismatches.
   const id = taskToEdit
     ? `task-modal-${taskToEdit.id}`
     : `task-modal-${idProject}-new`;
@@ -108,7 +107,7 @@ export default function CreateOrUpdateTask({
       <dialog id={id} className="modal">
         <div className="modal-box w-11/12 max-w-lg relative">
           {isSubmitting && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-neutral-900/50 rounded-2xl">
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-neutral-500/50">
               <span
                 className="loading loading-spinner loading-lg text-white"
                 aria-label="Enregistrement en cours"
