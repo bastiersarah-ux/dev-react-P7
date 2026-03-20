@@ -1,13 +1,12 @@
-"use client";
+'use client';
 
-import { AuthProvider } from "@front/context/AuthContext";
+import { AuthProvider } from '@front/context/AuthContext';
+import { NotificationProvider } from '@front/context/NotificationContext';
 
-export default function ClientProviders({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <AuthProvider>{children}</AuthProvider>
-  );
+export default function ClientProviders({ children }: { children: React.ReactNode }) {
+	return (
+		<NotificationProvider>
+			<AuthProvider>{children}</AuthProvider>
+		</NotificationProvider>
+	);
 }
