@@ -102,14 +102,14 @@ export default function ProjectClient({ project, tasks }: Props) {
 			<div className='flex flex-col w-full flex-1 gap-8'>
 				<div className='flex flex-wrap gap-5'>
 					<div className='flex flex-col gap-0.5'>
-						<div className='flex items-center'>
+						<div className='flex flex-wrap items-center'>
 							<h2 className='text-gray-800 text-2xl font-semibold'>{project?.name}</h2>
 							{isAdmin && <CreateOrUpdateProject projectToEdit={project} />}
 							{isAdmin && <DeleteProject projectId={project.id} projectName={project.name} />}
 						</div>
 						<p className='text-[18px]'>{project?.description ?? ''}</p>
 					</div>
-					<div className='flex gap-2 flex-1 justify-end items-center'>
+					<div className='flex gap-2 flex-1 flex-wrap justify-end items-center'>
 						<CreateOrUpdateTask idProject={project.id} onSuccess={() => router.refresh()} />
 						<ListAiTask
 							projectId={project.id}
@@ -125,11 +125,11 @@ export default function ProjectClient({ project, tasks }: Props) {
 							{members.length} personne{members.length > 1 ? 's' : ''}
 						</span>
 					</div>
-					<div className='flex items-center gap-2'>
+					<div className='flex flex-wrap items-center gap-2'>
 						{members
 							.filter((member) => member.role === 'OWNER')
 							.map((member) => (
-								<div key={member.id} className='flex items-center gap-2 h-6.75'>
+								<div key={member.id} className='flex items-center gap-2'>
 									<UserInitialsButton user={member.user} showFull fullNameAlt={currentRole == 'OWNER'} size='27px' />
 								</div>
 							))}
@@ -137,7 +137,7 @@ export default function ProjectClient({ project, tasks }: Props) {
 						{members
 							.filter((member) => member.role !== 'OWNER')
 							.map((member) => (
-								<div key={member.id} className='flex items-center gap-2 h-6.75'>
+								<div key={member.id} className='flex items-center gap-2'>
 									<UserInitialsButton user={member.user} showFull variant={'Variant2'} size='27px' />
 								</div>
 							))}
@@ -234,7 +234,7 @@ export default function ProjectClient({ project, tasks }: Props) {
 								</span>
 							</span>
 
-							<div className='flex items-center gap-5 h-6.75 flex-wrap'>
+							<div className='flex items-center gap-5 flex-wrap'>
 								<h5>Assigné à :</h5>
 								{(task.assignees ?? []).map((assignee) => {
 									const isOwner = members.find((member) => member.user.id == assignee.user?.id)?.role == 'OWNER';

@@ -26,12 +26,10 @@ export default function UserInitialsButton({ user, variant, showFull, size, full
 	if (showFull) {
 		return (
 			<div
-				className={`flex flex-wrap items-center gap-3 justify-center h-full text-inherit`}
+				className={`flex flex-wrap items-center gap-3 justify-center text-inherit`}
 				style={{ '--initial-size': size ?? '100%' } as React.CSSProperties}>
-				<span className={`btn btn-circle border-none ${styles.initial} ${styles.userIcon} ${cssClass} h-full`}>
-					{getInitials(user!.name ?? '')}
-				</span>
-				<span className={`btn btn-circle border-none ${styles.userIcon} w-auto px-5 ${cssClassFull} capitalize! h-full`}>{fullName}</span>
+				<span className={`btn btn-circle border-none ${styles.initial} ${styles.userIcon} ${cssClass}`}>{getInitials(user!.name ?? '')}</span>
+				<span className={`btn btn-circle border-none ${styles.userIcon} w-auto px-5 ${cssClassFull} capitalize!`}>{fullName}</span>
 			</div>
 		);
 	}
@@ -39,7 +37,7 @@ export default function UserInitialsButton({ user, variant, showFull, size, full
 	return (
 		<span
 			style={{ '--initial-size': size ?? '100%' } as React.CSSProperties}
-			className={`btn btn-circle border-none ${styles.initial} ${styles.userIcon} ${cssClass} h-full`}>
+			className={`btn btn-circle border-none ${styles.initial} ${styles.userIcon} ${cssClass}`}>
 			{getInitials(user!.name ?? '')}
 		</span>
 	);

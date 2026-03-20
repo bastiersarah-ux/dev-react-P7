@@ -16,7 +16,7 @@ export default async function ProjectPage() {
 	const projects = convertToProjectItemList(dashboardProjects, ownerProjects);
 
 	return (
-		<main className='px-44 py-17.5 flex flex-col gap-19  flex-1'>
+		<main className='md:px-44 md:py-17.5 p-10  flex flex-col gap-19  flex-1'>
 			<div className='w-full'>
 				<PageHeader title='Mes projets' subtitle='Gérez vos projets' />
 			</div>
