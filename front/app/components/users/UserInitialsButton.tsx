@@ -6,6 +6,7 @@ import { User } from '@front/types/api-types';
 import { UserButtonVariant } from '@front/types/props';
 import styles from './UserInitialsButton.module.css';
 
+/** Props du bouton initiales */
 type UserInitialsButtonProps = {
 	user?: User;
 	variant?: UserButtonVariant;
@@ -15,6 +16,7 @@ type UserInitialsButtonProps = {
 	fullNameAlt?: boolean;
 };
 
+/** Affiche les initiales d'un utilisateur dans un bouton rond */
 export default function UserInitialsButton({ user, variant, showFull, size, fontSize, fullNameAlt }: UserInitialsButtonProps) {
 	const { user: currentUser } = useAuth();
 	if (!currentUser || !user) return null;

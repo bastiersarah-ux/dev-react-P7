@@ -11,6 +11,7 @@ export class ValidationError extends Error {
   }
 }
 
+/** Wrapper fetch qui gère les headers et le parsing json */
 export async function fetchAPI<T = any>(
   path: string,
   options: RequestInit = {},

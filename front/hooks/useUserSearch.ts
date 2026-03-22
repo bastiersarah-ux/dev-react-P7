@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { User } from "@front/types/api-types";
 import { searchUsers } from "@front/services/userSearchService";
+import { User } from "@front/types/api-types";
+import { useEffect, useState } from "react";
 
+/** Hook pour rechercher des utilisateurs */
 export const useUserSearch = (query: string) => {
   const [users, setUsers] = useState<User[]>([]);
 

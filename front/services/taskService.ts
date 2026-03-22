@@ -1,6 +1,7 @@
 import { fetchAPI } from "@front/services/fetch-api";
 import { Task, TaskInput } from "@front/types/api-types";
 
+/** Récupère les tâches assignées à l'utilisateur */
 export const getTasks = async (init?: RequestInit): Promise<Task[]> => {
   const res = await fetchAPI<{ tasks: Task[] }>(
     "/dashboard/assigned-tasks",
@@ -9,6 +10,7 @@ export const getTasks = async (init?: RequestInit): Promise<Task[]> => {
   return res?.tasks ?? [];
 };
 
+/** Récupère les tâches d'un projet */
 export const getProjectTasks = async (
   projectId: number,
   init?: RequestInit,
@@ -20,6 +22,7 @@ export const getProjectTasks = async (
   return res?.tasks ?? [];
 };
 
+/** Récupère une tâche par son id */
 export const getTaskById = async (
   projectId: number,
   taskId: number,
@@ -32,6 +35,7 @@ export const getTaskById = async (
   return res?.task ?? null;
 };
 
+/** Ajoute une nouvelle tâche */
 export const addTask = async (
   idProjet: string,
   task: TaskInput,
@@ -46,6 +50,7 @@ export const addTask = async (
   return res?.task ?? null;
 };
 
+/** Met à jour une tâche */
 export const updateTaskById = async (
   projectId: string,
   taskId: string,
@@ -63,6 +68,7 @@ export const updateTaskById = async (
   return res?.task ?? null;
 };
 
+/** Supprime une tâche */
 export const deleteTaskById = async (
   projectId: string,
   taskId: string,

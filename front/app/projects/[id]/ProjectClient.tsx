@@ -22,11 +22,13 @@ import { useRouter } from 'next/navigation';
 import { ChangeEvent, useMemo, useState } from 'react';
 import UserInitialsButton from '../../components/users/UserInitialsButton';
 
+/** Props du composant ProjectClient */
 type Props = {
 	project: Project;
 	tasks: Task[];
 };
 
+/** Page client d'un projet avec ses tâches */
 export default function ProjectClient({ project, tasks }: Props) {
 	const router = useRouter();
 	const { user } = useAuth();
@@ -36,10 +38,12 @@ export default function ProjectClient({ project, tasks }: Props) {
 	const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
 	const [submittingComment, setSubmittingComment] = useState<string | null>(null);
 
+	/** Liste des membres avec leur vrai rôle */
 	const members = useMemo<ProjectMember[]>(() => {
 		return project ? getProjectMemberWithRealRole(project) : [];
 	}, [project]);
 
+	/** Rôle de l'utilisateur connecté */
 	const currentRole = useMemo<ProjectMemberRole | null>(() => {
 		if (!user) return null;
 		if (project.ownerId === user.id) return 'OWNER';
@@ -49,6 +53,7 @@ export default function ProjectClient({ project, tasks }: Props) {
 
 	const isAdmin = currentRole === 'OWNER' || currentRole === 'ADMIN';
 
+	/** Tâches filtrées et triées */
 	const filteredTasks = useMemo(() => {
 		const filtered = statusFilter ? tasks.filter((task) => task.status === statusFilter) : [...tasks];
 
@@ -65,10 +70,12 @@ export default function ProjectClient({ project, tasks }: Props) {
 		});
 	}, [tasks, statusFilter]);
 
+	/** Change l'onglet actif */
 	const onChange = (ev: ChangeEvent<HTMLInputElement>) => {
 		setCurrentTab(ev.target.value as 'list' | 'calendar');
 	};
 
+	/** Ajoute un commentaire sur une tâche */
 	const handleAddComment = async (taskId: string) => {
 		const content = commentInputs[taskId]?.trim();
 		if (!content) return;
@@ -104,7 +111,7 @@ export default function ProjectClient({ project, tasks }: Props) {
 					<div className='flex flex-col gap-0.5'>
 						<div className='flex flex-wrap items-center'>
 							<h2 className='text-gray-800 text-2xl font-semibold'>{project?.name}</h2>
-							{isAdmin && <CreateOrUpdateProject projectToEdit={project} />}
+							{isAdmin && <CreateOrUpdateProject projectToEdit={project} projectTasks={tasks} />}
 							{isAdmin && <DeleteProject projectId={project.id} projectName={project.name} />}
 						</div>
 						<p className='text-[18px]'>{project?.description ?? ''}</p>
@@ -152,13 +159,9 @@ export default function ProjectClient({ project, tasks }: Props) {
 						</div>
 
 						<div className='flex items-center gap-4 flex-wrap'>
-							<fieldset className='flex gap-4 h-13 justify-end-safe'>
+							<fieldset className='flex switcher-btn-container justify-end-safe'>
 								<legend className='hidden'>Affichage</legend>
-								<label
-									htmlFor='tab-list'
-									className={`btn btn-ghost flex h-full font-normal items-center text-[14px] text-(--color-warning-content) gap-2 ${
-										currentTab === 'list' ? 'bg-(--color-warning)' : ''
-									}`}>
+								<label htmlFor='tab-list' className={`btn btn-joined ${currentTab === 'list' ? 'bg-(--color-warning)' : ''}`}>
 									<Image src={ListIcon} alt='Icône liste' className='w-4 h-4' />
 									Liste
 								</label>
@@ -174,9 +177,7 @@ export default function ProjectClient({ project, tasks }: Props) {
 
 								<label
 									htmlFor='tab-calendar'
-									className={`btn btn-ghost flex h-full items-center font-normal text-[14px] text-(--color-warning-content) gap-2 ${
-										currentTab === 'calendar' ? 'bg-(--color-warning) ' : ''
-									}`}>
+									className={`btn btn-joined ${currentTab === 'calendar' ? 'bg-(--color-warning) ' : ''}`}>
 									<Image src={OrangeCalendarIcon} alt='Vue calendrier' className='w-4 h-4' />
 									Calendrier
 								</label>
@@ -190,18 +191,29 @@ export default function ProjectClient({ project, tasks }: Props) {
 									className='hidden'
 								/>
 							</fieldset>
-							<select
-								value={statusFilter}
-								onChange={(e) => setStatusFilter(e.target.value as TaskStatus | '')}
-								className='select select-lg h-18 w-31 pr-5 text-[14px] text-gray-600'
-								aria-label='Filtrer par statut'>
-								<option value=''>Statut</option>
-								{Object.keys(statusList).map((key) => (
-									<option key={key} value={key}>
-										{statusList[key as TaskStatus]}
-									</option>
-								))}
-							</select>
+							<div className='relative select-box'>
+								<select
+									value={statusFilter}
+									onChange={(e) => setStatusFilter(e.target.value as TaskStatus | '')}
+									className='select filter text-gray-600 appearance-none!'
+									aria-label='Filtrer par statut'>
+									<option value=''>Statut</option>
+									{Object.keys(statusList).map((key) => (
+										<option key={key} value={key}>
+											{statusList[key as TaskStatus]}
+										</option>
+									))}
+								</select>
+								<svg
+									className='absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none'
+									fill='none'
+									width={50}
+									height={25}
+									stroke='currentColor'
+									viewBox='0 0 24 24'>
+									<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={1} d='M19 9l-7 7-7-7' />
+								</svg>
+							</div>
 							<div className='h-18'>
 								<SearchBar />
 							</div>

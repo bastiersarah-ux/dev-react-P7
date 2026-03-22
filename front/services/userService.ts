@@ -5,6 +5,7 @@ import {
   User,
 } from "@front/types/api-types";
 
+/** Retourne les initiales d'un nom */
 export function getInitials(name?: string) {
   if (!name) return "";
   return name
@@ -14,11 +15,13 @@ export function getInitials(name?: string) {
     .toUpperCase();
 }
 
+/** Récupère le profil de l'utilisateur connecté */
 export const getProfile = async (init?: RequestInit): Promise<User | null> => {
   const res = await fetchAPI<{ user: User }>("/auth/profile", init);
   return res?.user ?? null;
 };
 
+/** Met à jour le profil utilisateur */
 export const updateProfile = async (
   data: UpdateProfileInput,
   init?: RequestInit,
@@ -31,6 +34,7 @@ export const updateProfile = async (
   return res?.user ?? null;
 };
 
+/** Met à jour le mot de passe */
 export const updatePassword = async (
   data: UpdatePasswordInput,
   init?: RequestInit,

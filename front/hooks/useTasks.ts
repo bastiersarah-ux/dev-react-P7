@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { Task } from "@front/types/api-types";
 import { getTasks } from "@front/services/taskService";
+import { Task } from "@front/types/api-types";
+import { useEffect, useState } from "react";
 
+/** Hook pour récupérer les tâches de l'utilisateur */
 export const useTasks = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
 

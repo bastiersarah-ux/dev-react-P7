@@ -1,8 +1,7 @@
 import { fetchAPI } from "@front/services/fetch-api";
-import { DashboardProject, Project } from "@front/types/api-types";
-import { AddContributorInput } from "@front/types/api-types";
-import { ProjectInput } from "@front/types/api-types";
+import { AddContributorInput, DashboardProject, Project, ProjectInput } from "@front/types/api-types";
 
+/** Récupère les projets du dashboard */
 export const getDashboardProjects = async (
   init?: RequestInit,
 ): Promise<DashboardProject[]> => {
@@ -14,11 +13,13 @@ export const getDashboardProjects = async (
   return res?.projects ?? [];
 };
 
+/** Récupère tous les projets */
 export const getProjects = async (init?: RequestInit): Promise<Project[]> => {
   const res = await fetchAPI<{ projects: Project[] }>("/projects", init);
   return res?.projects ?? [];
 };
 
+/** Récupère un projet par son id */
 export const getProjectById = async (
   id: string,
   init?: RequestInit,
@@ -27,6 +28,7 @@ export const getProjectById = async (
   return res?.project ?? null;
 };
 
+/** Crée un nouveau projet */
 export const createProject = async (
   project: ProjectInput,
   init?: RequestInit,
@@ -39,6 +41,7 @@ export const createProject = async (
   return res?.project ?? null;
 };
 
+/** Met à jour un projet */
 export const updateProject = async (
   id: string,
   project: ProjectInput,
@@ -52,6 +55,7 @@ export const updateProject = async (
   return res?.project ?? null;
 };
 
+/** Supprime un projet */
 export const deleteProject = async (
   id: string,
   init?: RequestInit,
@@ -63,6 +67,7 @@ export const deleteProject = async (
   return res?.success ?? true;
 };
 
+/** Ajoute un contributeur au projet */
 export const addContributor = async (
   projectId: string,
   contributor: AddContributorInput,
@@ -76,6 +81,7 @@ export const addContributor = async (
   return res?.success ?? true;
 };
 
+/** Retire un contributeur du projet */
 export const removeContributor = async (
   projectId: string,
   userId: string,

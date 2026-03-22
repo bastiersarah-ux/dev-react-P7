@@ -5,16 +5,19 @@ import { User } from '@front/types/api-types';
 import { usePathname, useRouter } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
+/** Type du contexte d'authentification */
 type AuthContextType = {
 	user: User | null;
 	login: (userData: User) => void;
 	logout: () => Promise<void>;
+	refreshUser: () => Promise<void>;
 	isAuthenticated: boolean;
 	isLoading: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/** Provider pour gérer l'authentification */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [user, setUser] = useState<User | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
@@ -64,9 +67,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	const isAuthenticated = !!user;
 
-	return <AuthContext.Provider value={{ user, login, logout, isAuthenticated, isLoading }}>{children}</AuthContext.Provider>;
+	/** Rafraîchit les données utilisateur depuis l'API */
+	const refreshUser = async () => {
+		await fetchUser();
+	};
+
+	return <AuthContext.Provider value={{ user, login, logout, refreshUser, isAuthenticated, isLoading }}>{children}</AuthContext.Provider>;
 };
 
+/** Hook pour accéder au contexte d'auth */
 export const useAuth = (): AuthContextType => {
 	const context = useContext(AuthContext);
 	if (!context) throw new Error('useAuth doit être utilisé à l’intérieur d’un AuthProvider.');

@@ -1,18 +1,24 @@
 'use client';
 
+import { useAuth } from '@front/context/AuthContext';
 import { useNotification } from '@front/context/NotificationContext';
 import { addContributor, createProject, removeContributor, updateProject } from '@front/services/projectsService';
-import { Project, ProjectInput, User } from '@front/types/api-types';
+import { updateTaskById } from '@front/services/taskService';
+import { Project, ProjectInput, Task, User } from '@front/types/api-types';
 import { useRouter } from 'next/navigation';
 import { SubmitEvent, useEffect, useMemo, useState } from 'react';
 import UserSelector from '../users/UserSelector';
 
+/** Props de la modale projet */
 type CreateOrUpdateProjectProp = {
 	projectToEdit?: Project | null;
+	projectTasks?: Task[] | null;
 };
 
-export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateProjectProp) {
+/** Modale pour créer ou modifier un projet */
+export default function CreateOrUpdateProject({ projectToEdit, projectTasks }: CreateOrUpdateProjectProp) {
 	const router = useRouter();
+	const { user } = useAuth();
 	const { showSuccess, showError } = useNotification();
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
@@ -88,12 +94,20 @@ export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateP
 					await removeContributor(projectToEdit.id, user.id);
 				}
 
+				// Si un contributeur supprimé est affecté à des tâches alors on le désaffecte automatiquement de ces dernières
+				const tasksToUpdate = (projectTasks ?? []).filter((t) => t.assignees?.some((a) => toRemove.map((u) => u.id).includes(a.user!.id)));
+				for (const task of tasksToUpdate) {
+					const assigneesIds = task.assignees?.map((t) => t.user!.id).filter((id) => !toRemove.map((u) => u.id).includes(id)) ?? [];
+					await updateTaskById(projectToEdit.id, task.id, {
+						...task,
+						assigneeIds: assigneesIds,
+						dueDate: new Date(task.dueDate!).toISOString(),
+					});
+				}
+
 				for (const user of toAdd) {
 					await addContributor(projectToEdit.id, {
-						userId: parseInt(user.id),
-						projectId: parseInt(projectToEdit.id),
 						email: user.email,
-						name: user.name,
 						role: 'CONTRIBUTOR',
 					});
 				}
@@ -104,13 +118,19 @@ export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateP
 				const input: ProjectInput = {
 					name: title,
 					description,
-					contributors: selectedUsers.map((user) => user.email) ?? [],
+					contributors: [],
 				};
 
 				const res = await createProject(input);
 				if (!res) {
 					showError("Erreur lors de l'enregistrement du projet");
 					return;
+				}
+
+				// Le créateur du projet devient automatiquement ADMIN
+				await addContributor(res.id, { email: user!.email, role: 'ADMIN' });
+				for (const member of selectedUsers) {
+					await addContributor(res.id, { email: member.email, role: 'CONTRIBUTOR' });
 				}
 
 				showSuccess('Projet créé avec succès');
@@ -133,7 +153,7 @@ export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateP
 	return (
 		<>
 			<button
-				className={`btn ${isEditMode ? 'btn-link text-primary' : 'bg-black text-white h-12.5!'} font-normal px-4 py-1 rounded-[10px]`}
+				className={`btn ${isEditMode ? 'btn-link text-primary' : 'btn-black h-14!'} font-normal px-8 py-5 rounded-[10px]`}
 				onClick={showModal}>
 				{isEditMode ? 'Modifier' : '+ Créer un projet'}
 			</button>
@@ -151,7 +171,7 @@ export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateP
 						</button>
 					</form>
 
-					<h3 className='font-bold text-lg mb-4'>{isEditMode ? 'Modifier un projet' : 'Créer un projet'}</h3>
+					<h2 className='font-bold text-lg mb-4'>{isEditMode ? 'Modifier un projet' : 'Créer un projet'}</h2>
 
 					<form className='space-y-4' onSubmit={(e) => handleSubmit(e)}>
 						<div className='form-control w-full'>
@@ -179,11 +199,11 @@ export default function CreateOrUpdateProject({ projectToEdit }: CreateOrUpdateP
 								/>
 							</fieldset>
 
-							<UserSelector selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} />
+							<UserSelector selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} label='Contributeurs' />
 
-							<div className='modal-action'>
-								<button type='submit' className='btn btn-primary btn-outline' disabled={isSubmitting}>
-									{projectToEdit ? 'Enregistrer' : '+ Ajouter un projet'}
+							<div className='modal-action justify-start'>
+								<button type='submit' className='btn btn-primary btn-outline  text-lg font-normal px-15 py-7' disabled={isSubmitting}>
+									{projectToEdit ? 'Enregistrer' : 'Ajouter un projet'}
 								</button>
 							</div>
 						</div>

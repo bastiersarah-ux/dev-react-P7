@@ -6,6 +6,7 @@ import styles from './Header.module.css';
 import NavMenu from './NavMenu';
 import UserMenu from './users/UserMenu';
 
+/** Header de l'application avec navigation */
 const Header = () => {
 	const { isAuthenticated } = useAuth();
 
@@ -13,7 +14,7 @@ const Header = () => {
 
 	return (
 		<header className={styles.header}>
-			<nav className='navbar bg-base-200 h-23.5'>
+			<nav className='navbar bg-base-200 h-23.5 gap-10'>
 				<div className='navbar-start gap-4'>
 					<button
 						type='button'
@@ -39,7 +40,7 @@ const Header = () => {
 					<NavMenu />
 				</div>
 				<div className='navbar-end'>
-					<UserMenu />
+					<UserMenu variant={location.pathname == '/account' ? 'Variant1' : 'Variant3'} />
 				</div>
 			</nav>
 		</header>

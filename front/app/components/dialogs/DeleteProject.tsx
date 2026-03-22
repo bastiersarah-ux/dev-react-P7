@@ -6,11 +6,13 @@ import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+/** Props de la modale suppression projet */
 type DeleteProjectProps = {
 	projectId: string;
 	projectName: string;
 };
 
+/** Modale de suppression d'un projet */
 export default function DeleteProject({ projectId, projectName }: DeleteProjectProps) {
 	const router = useRouter();
 	const dialogRef = useRef<HTMLDialogElement>(null);

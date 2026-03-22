@@ -4,12 +4,14 @@ import { useNotification } from '@front/context/NotificationContext';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+/** Props de la modale de confirmation */
 type ConfirmDeleteProps = {
 	title: string;
 	message: string;
 	onConfirm: () => Promise<void> | void;
 };
 
+/** Modale de confirmation de suppression */
 export default function ConfirmDelete({ title, message, onConfirm }: ConfirmDeleteProps) {
 	const dialogRef = useRef<HTMLDialogElement>(null);
 	const [isLoading, setIsLoading] = useState(false);

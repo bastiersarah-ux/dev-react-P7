@@ -4,6 +4,7 @@ import { TaskViewProp } from '@front/types/props';
 import SearchBar from './SearchBar';
 import TaskCard from './TaskCard';
 
+/** Liste des tâches assignées */
 export default function TaskList({ tasks }: TaskViewProp) {
 	return (
 		<div className='card bg-white gap-10 shadow-md p-6 space-y-6'>

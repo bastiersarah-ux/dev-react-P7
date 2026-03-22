@@ -107,8 +107,6 @@ export const convertToProjectItemList = (
     }
   }
 
-  console.log()
-
   return Array.from(byId.values()).sort((a, b) => {
     if (!a.earliestDueDate && !b.earliestDueDate) return 0;
     if (!a.earliestDueDate) return 1;

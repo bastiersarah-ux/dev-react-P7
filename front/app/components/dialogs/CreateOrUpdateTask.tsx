@@ -3,17 +3,18 @@
 import { useNotification } from '@front/context/NotificationContext';
 import { addTask, updateTaskById } from '@front/services/taskService';
 import { Task, TaskInput, TaskStatus, User } from '@front/types/api-types';
-import { MouseEvent, SubmitEvent, useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import StatusBadge from '../tasks/StatusBadge';
-import UserSelector from '../users/UserSelector';
+import TaskForm from '../tasks/TaskForm';
 
+/** Props de la modale tâche */
 type CreateOrUpdateTaskProp = {
 	taskToEdit?: Task;
 	idProject: string;
 	onSuccess?: () => void;
 };
 
+/** Modale pour créer ou modifier une tâche */
 export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }: CreateOrUpdateTaskProp) {
 	const { showSuccess, showError } = useNotification();
 	const [title, setTitle] = useState('');
@@ -61,8 +62,7 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 		}
 	}, [taskToEdit]);
 
-	const handleSubmit = async (e: SubmitEvent) => {
-		e.preventDefault();
+	const handleSubmit = async () => {
 		setIsSubmitting(true);
 
 		try {
@@ -95,8 +95,6 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 		}
 	};
 
-	const statusList: TaskStatus[] = ['TODO', 'IN_PROGRESS', 'DONE'];
-
 	const isEditMode = !!taskToEdit;
 
 	const id = taskToEdit ? `task-modal-${taskToEdit.id}` : `task-modal-${idProject}-new`;
@@ -115,70 +113,24 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 					</button>
 				</form>
 
-				<h3 className='font-bold text-lg mb-4'>{isEditMode ? 'Modifier une tâche' : 'Créer une tâche'}</h3>
+				<h2 className='font-bold text-lg mb-4'>{isEditMode ? 'Modifier une tâche' : 'Créer une tâche'}</h2>
 
-				<form className='space-y-4' onSubmit={(e) => handleSubmit(e)}>
-					<div className='form-control w-full'>
-						<fieldset className='fieldset'>
-							<legend className='fieldset-legend'>Titre*</legend>
-							<input
-								type='text'
-								className='input input-bordered w-full'
-								value={title}
-								required
-								onChange={(e) => setTitle(e.target.value)}
-								aria-label='Titre de la tâche'
-							/>
-						</fieldset>
-
-						<fieldset className='fieldset'>
-							<legend className='fieldset-legend'>Description*</legend>
-							<input
-								type='text'
-								className='input input-bordered w-full'
-								value={description}
-								required
-								onChange={(e) => setDescription(e.target.value)}
-								aria-label='Description de la tâche'
-							/>
-						</fieldset>
-
-						<fieldset className='fieldset relative'>
-							<legend className='fieldset-legend'>Échéance*</legend>
-							<input
-								type='date'
-								className='input input-bordered w-full pr-10'
-								value={dueDate}
-								required
-								onChange={(e) => setDueDate(e.target.value)}
-								aria-label="Date d'échéance"
-							/>
-						</fieldset>
-
-						<UserSelector selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} />
-
-						<fieldset className='fieldset'>
-							<legend className='fieldset-legend'>Statut</legend>
-							<div className='filter'>
-								<input
-									className='btn btn-ghost text-[17px] btn-badge'
-									type='reset'
-									value='×'
-									onClick={() => setStatus(null)}
-									aria-label='Réinitialiser le statut'
-								/>
-								{statusList.map((s) => (
-									<StatusBadge key={s} status={s} formMode onSelect={(value) => setStatus(value)} isChecked={status === s} />
-								))}
-							</div>
-						</fieldset>
-						<div className='modal-action'>
-							<button type='submit' className='btn btn-primary btn-outline'>
-								{taskToEdit ? 'Enregistrer' : '+ Ajouter une tâche'}
-							</button>
-						</div>
-					</div>
-				</form>
+				<TaskForm
+					title={title}
+					setTitle={setTitle}
+					description={description}
+					setDescription={setDescription}
+					dueDate={dueDate}
+					setDueDate={setDueDate}
+					status={status}
+					setStatus={setStatus}
+					selectedUsers={selectedUsers}
+					setSelectedUsers={setSelectedUsers}
+					requiredFields={{ title: true, description: true, dueDate: true }}
+					submitLabel={taskToEdit ? 'Enregistrer' : '+ Ajouter une tâche'}
+					onSubmit={handleSubmit}
+					asForm
+				/>
 			</div>
 
 			<form method='dialog' className='modal-backdrop'>
@@ -190,7 +142,7 @@ export default function CreateOrUpdateTask({ taskToEdit, idProject, onSuccess }:
 	return (
 		<>
 			{!taskToEdit ? (
-				<button className='btn bg-black  h-12.5 text-white ' onClick={showModal}>
+				<button className='btn btn-black py-7 px-6' onClick={showModal}>
 					Créer une tâche
 				</button>
 			) : (

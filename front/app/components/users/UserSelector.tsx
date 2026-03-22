@@ -4,12 +4,15 @@ import { useUserSearch } from '@front/hooks/useUserSearch';
 import { User } from '@front/types/api-types';
 import { useState } from 'react';
 
+/** Props du sélecteur d'utilisateurs */
 interface UserSelectorProps {
 	selectedUsers: User[];
 	setSelectedUsers: (users: User[]) => void;
+	label: string;
 }
 
-export default function UserSelector({ selectedUsers, setSelectedUsers }: UserSelectorProps) {
+/** Sélecteur d'utilisateurs avec recherche */
+export default function UserSelector({ selectedUsers, setSelectedUsers, label }: UserSelectorProps) {
 	const [query, setQuery] = useState('');
 	const { users } = useUserSearch(query);
 
@@ -26,15 +29,24 @@ export default function UserSelector({ selectedUsers, setSelectedUsers }: UserSe
 
 	return (
 		<fieldset className='fieldset relative'>
-			<legend className='fieldset-legend'>Assigné à</legend>
-			<input
-				type='text'
-				placeholder='Choisir un ou plusieurs collaborateurs (Tapez au moins deux lettres)'
-				className='input input-bordered w-full'
-				value={query}
-				onChange={(e) => setQuery(e.target.value)}
-				aria-label='Rechercher un collaborateur'
-			/>
+			<legend className='fieldset-legend'>{label}</legend>
+			<div className='relative'>
+				<input
+					type='text'
+					placeholder='Choisir un ou plusieurs collaborateurs (Tapez au moins deux lettres)'
+					className='input input-bordered w-full text-[11px] pr-10'
+					value={query}
+					onChange={(e) => setQuery(e.target.value)}
+					aria-label='Rechercher un collaborateur'
+				/>
+				<svg
+					className='absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none'
+					fill='none'
+					stroke='currentColor'
+					viewBox='0 0 24 24'>
+					<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
+				</svg>
+			</div>
 
 			{users.length > 0 && (
 				<ul className='menu bg-base-100 rounded-box shadow w-full absolute z-10 top-11 max-h-48 overflow-auto mt-1'>

@@ -1,6 +1,7 @@
 import { fetchAPI } from "@front/services/fetch-api";
 import { Task } from "@front/types/api-types";
 
+/** Récupère toutes les tâches d'un projet */
 export const getTasksOfProject = async (
   id: string,
   init?: RequestInit,

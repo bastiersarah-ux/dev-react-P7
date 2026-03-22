@@ -2,14 +2,17 @@
 
 import { createContext, ReactNode, useCallback, useContext, useState } from 'react';
 
+/** Types de notification possibles */
 type NotificationType = 'success' | 'error' | 'warning' | 'info';
 
+/** Structure d'une notification */
 type Notification = {
 	id: string;
 	type: NotificationType;
 	message: string;
 };
 
+/** Type du contexte de notification */
 type NotificationContextType = {
 	notifications: Notification[];
 	showSuccess: (message: string) => void;
@@ -21,6 +24,7 @@ type NotificationContextType = {
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
+/** Provider pour afficher des notifications toast */
 export function NotificationProvider({ children }: { children: ReactNode }) {
 	const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -51,6 +55,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 	);
 }
 
+/** Hook pour afficher des notifications */
 export function useNotification() {
 	const context = useContext(NotificationContext);
 	if (!context) {

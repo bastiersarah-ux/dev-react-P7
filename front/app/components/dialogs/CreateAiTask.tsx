@@ -1,27 +1,37 @@
 'use client';
 
 import { useNotification } from '@front/context/NotificationContext';
+import DeleteIcon from '@front/public/delete.svg';
+import EditIcon from '@front/public/edit.svg';
 import OrangeStarIcon from '@front/public/orange-star.svg';
 import StarIcon from '@front/public/star.svg';
 import { addTask } from '@front/services/taskService';
-import { Task, TaskInput, TaskStatus, User } from '@front/types/api-types';
+import { TaskInput, TaskStatus, User } from '@front/types/api-types';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import TaskForm from '../tasks/TaskForm';
 
+/** Props du générateur de tâches IA */
 type ListAiTaskProp = {
-	tasks?: Task[];
 	contributors?: User[];
 	projectId: string;
 	onSuccess?: () => void;
 };
 
-// Small, deterministic-ish generator executed only on the client (button click)
-// to avoid any SSR/client mismatch. The seed is kept in state so re-renders are stable.
-export default function ListAiTask({ tasks, contributors = [], projectId, onSuccess }: ListAiTaskProp) {
+/** Modale pour générer des tâches avec l'IA */
+export default function ListAiTask({ contributors = [], projectId, onSuccess }: ListAiTaskProp) {
 	const { showSuccess, showError } = useNotification();
 	const [prompt, setPrompt] = useState('');
 	const [generated, setGenerated] = useState<TaskInput[]>([]);
 	const [isGenerating, setIsGenerating] = useState(false);
+	const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+	// États pour le formulaire d'édition
+	const [editTitle, setEditTitle] = useState('');
+	const [editDescription, setEditDescription] = useState('');
+	const [editDueDate, setEditDueDate] = useState('');
+	const [editStatus, setEditStatus] = useState<TaskStatus | null>(null);
+	const [editSelectedUsers, setEditSelectedUsers] = useState<User[]>([]);
 
 	const myModal = () => document.querySelector<HTMLDialogElement>('#ai_task_modal');
 
@@ -50,11 +60,46 @@ export default function ListAiTask({ tasks, contributors = [], projectId, onSucc
 			setPrompt('');
 			setGenerated([]);
 			setIsGenerating(false);
+			setEditingIndex(null);
 		};
 
 		modal.addEventListener('close', handleClose);
 		return () => modal.removeEventListener('close', handleClose);
 	}, []);
+
+	/** Ouvre le formulaire d'édition pour une tâche */
+	const startEditing = (idx: number) => {
+		const task = generated[idx];
+		setEditTitle(task.title || '');
+		setEditDescription(task.description || '');
+		setEditDueDate(task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 10) : '');
+		setEditStatus(task.status || null);
+		// Récupère les users correspondant aux IDs assignés
+		const assignedUsers = contributors.filter((c) => task.assigneeIds?.includes(c.id));
+		setEditSelectedUsers(assignedUsers);
+		setEditingIndex(idx);
+	};
+
+	/** Sauvegarde les modifications d'une tâche */
+	const saveEditing = () => {
+		if (editingIndex === null) return;
+		const updatedTasks = [...generated];
+		updatedTasks[editingIndex] = {
+			...updatedTasks[editingIndex],
+			title: editTitle,
+			description: editDescription,
+			dueDate: editDueDate ? new Date(editDueDate).toISOString() : undefined,
+			status: editStatus || 'TODO',
+			assigneeIds: editSelectedUsers.map((u) => u.id),
+		};
+		setGenerated(updatedTasks);
+		setEditingIndex(null);
+	};
+
+	/** Annule l'édition */
+	const cancelEditing = () => {
+		setEditingIndex(null);
+	};
 
 	const handleGenerate = () => {
 		if (isGenerating) return;
@@ -65,8 +110,6 @@ export default function ListAiTask({ tasks, contributors = [], projectId, onSucc
 		const actions = ['Ajouter', 'Finaliser', 'Corriger', 'Mettre à jour', 'Valider', 'Mesurer', 'Automatiser', 'Revoir', 'Nettoyer'];
 		const priorities: TaskInput['priority'][] = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
 		const statuses: TaskStatus[] = ['TODO', 'IN_PROGRESS', 'DONE'];
-
-		const hint = prompt.trim().length > 0 ? ` (${prompt.slice(0, 40)})` : '';
 
 		// Simulate async generation latency
 		setTimeout(() => {
@@ -84,7 +127,7 @@ export default function ListAiTask({ tasks, contributors = [], projectId, onSucc
 					.map((c) => c.id);
 
 				return {
-					title: `${action} ${theme}${hint}`.trim(),
+					title: `${action} ${theme}`.trim(),
 					description: `Tâche auto-générée pour ${theme.toLowerCase()}.`,
 					priority,
 					status,
@@ -115,7 +158,7 @@ export default function ListAiTask({ tasks, contributors = [], projectId, onSucc
 
 	return (
 		<>
-			<button className='btn btn-primary h-12.5 w-23.5' onClick={showModal}>
+			<button className='btn btn-primary py-7 px-6' onClick={showModal}>
 				<Image src={StarIcon} alt='' width={21} height={21} aria-hidden='true' />
 				IA
 			</button>
@@ -133,39 +176,81 @@ export default function ListAiTask({ tasks, contributors = [], projectId, onSucc
 
 					<div className='flex items-center gap-2 mb-6'>
 						<Image src={OrangeStarIcon} alt='' width={21} height={21} aria-hidden='true' />
-						<h3 className='font-bold text-lg'>Vos tâches...</h3>
+						<h2 className='font-bold text-lg'>
+							{editingIndex !== null ? 'Modifier la tâche' : generated.length > 0 ? 'Vos tâches...' : 'Créer une tâche'}
+						</h2>
 					</div>
-					{generated.length > 0 ? (
+
+					{/* Formulaire d'édition */}
+					{editingIndex !== null ? (
+						<div className='mb-6'>
+							<TaskForm
+								title={editTitle}
+								setTitle={setEditTitle}
+								description={editDescription}
+								setDescription={setEditDescription}
+								dueDate={editDueDate}
+								setDueDate={setEditDueDate}
+								status={editStatus}
+								setStatus={setEditStatus}
+								selectedUsers={editSelectedUsers}
+								setSelectedUsers={setEditSelectedUsers}
+								requiredFields={{ title: true }}
+								submitLabel='Enregistrer'
+								onSubmit={saveEditing}
+								showCancel
+								onCancel={cancelEditing}
+							/>
+						</div>
+					) : generated.length > 0 ? (
 						<>
 							<div className='flex flex-col gap-4 mb-6'>
-								{(generated.length ? generated : (tasks ?? [])).map((task, idx) => (
-									<div key={'ai-task-' + idx} className='border rounded-xl p-4 bg-base-100 shadow-sm'>
-										<h4 className='font-semibold'>{task.title}</h4>
-										<p className='text-sm opacity-70'>{task.description}</p>
+								{generated.map((task, idx) => (
+									<div key={'ai-task-' + idx} className='border border-gray-200 rounded-xl p-4 bg-base-200'>
+										<h3>{task.title || 'Nom de la tâche'}</h3>
+										<p className='text-md text-gray-500 mt-1'>{task.description || 'Description de la tâche'}</p>
 
-										<div className='flex gap-4 mt-3 text-sm opacity-70'>
-											{task.priority && <span className='uppercase text-xs font-semibold'>{task.priority}</span>}
-											{task.status && <span>{task.status}</span>}
+										<div className='flex gap-4 mt-3 text-sm text-gray-500'>
+											<button
+												type='button'
+												className='flex items-center gap-1 hover:underline cursor-pointer'
+												onClick={() => setGenerated(generated.filter((_, i) => i !== idx))}>
+												<Image src={DeleteIcon} alt='' width={14} height={14} aria-hidden='true' />
+												Supprimer
+											</button>
+											<span className='text-gray-300'>|</span>
+											<button
+												type='button'
+												className='flex items-center gap-1 hover:underline cursor-pointer'
+												onClick={() => startEditing(idx)}>
+												<Image src={EditIcon} alt='' width={14} height={14} aria-hidden='true' />
+												Modifier
+											</button>
 										</div>
 									</div>
 								))}
 							</div>
 
 							<div className='flex justify-center mb-6'>
-								<button className='btn btn-primary btn-outline' disabled={!generated.length} onClick={() => handleAddTask()}>
+								<button
+									className='btn bg-black py-7 text-lg font-normal px-6 text-white'
+									disabled={!generated.length}
+									onClick={() => handleAddTask()}>
 									+ Ajouter les tâches
 								</button>
 							</div>
+
+							<div className='divider'></div>
 						</>
 					) : (
-						<div className='min-h-100'></div>
+						<div className='min-h-80'></div>
 					)}
 
-					<div className='bg-base-200 rounded-full flex items-center px-4 py-2'>
+					<div className='bg-base-100 rounded-full flex items-center px-8 py-4'>
 						<input
 							type='text'
 							placeholder='Décrivez les tâches que vous souhaitez ajouter...'
-							className='flex-1 bg-transparent outline-none text-sm'
+							className='flex-1  outline-none text-sm'
 							value={prompt}
 							onChange={(e) => setPrompt(e.target.value)}
 							onKeyDown={(e) => {

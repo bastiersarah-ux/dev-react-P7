@@ -6,10 +6,12 @@ import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import UserInitialsButton from './UserInitialsButton';
 
+/** Props du menu utilisateur */
 type UserMenuProps = {
 	variant?: UserButtonVariant;
 };
 
+/** Menu dropdown de l'utilisateur connecté */
 export default function UserMenu({ variant }: UserMenuProps) {
 	const { user, logout } = useAuth();
 	const dropdownRef = useRef<HTMLDetailsElement>(null);

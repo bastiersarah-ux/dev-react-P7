@@ -11,12 +11,15 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import styles from './AuthTemplate.module.css';
 
+/** Props du template d'auth */
 type AuthTemplateProps = {
 	isLogin: boolean;
 };
 
+/** Erreurs par champ */
 type FieldErrors = Record<string, string>;
 
+/** Template pour les pages login et register */
 export default function AuthTemplate({ isLogin }: AuthTemplateProps) {
 	const router = useRouter();
 	const { login, isAuthenticated } = useAuth();
@@ -27,9 +30,9 @@ export default function AuthTemplate({ isLogin }: AuthTemplateProps) {
 
 	useEffect(() => {
 		if (isAuthenticated) {
-			router.replace('/dashboard');
+			router.replace(isLogin ? '/dashboard' : '/account');
 		}
-	}, [isAuthenticated, router]);
+	}, [isAuthenticated, router, isLogin]);
 
 	async function handleSubmit(e: React.SubmitEvent) {
 		e.preventDefault();

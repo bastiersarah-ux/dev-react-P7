@@ -1,4 +1,3 @@
-import nextConfig from "./../next.config";
 
 export type LoginForm = {
   email: string;
@@ -118,10 +117,7 @@ export type ProjectInput = {
 };
 
 export type AddContributorInput = {
-  userId: number;
-  projectId: number;
-  email?: string;
-  name?: string;
+  email: string;
   role: "CONTRIBUTOR" | "ADMIN";
 };
 
@@ -132,7 +128,7 @@ export type ErrorResponse = {
   details?: Array<{ field: string; message: string }>;
 };
 
-export type SuccessResponse<T = any> = {
+export type SuccessResponse<T = unknown> = {
   success: boolean;
   message: string;
   data?: T;

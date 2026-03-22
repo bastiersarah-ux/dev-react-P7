@@ -1,6 +1,7 @@
 import { fetchAPI } from "@front/services/fetch-api";
 import { Comment } from "@front/types/api-types";
 
+/** Crée un commentaire sur une tâche */
 export const createComment = async (
     projectId: string,
     taskId: string,

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Footer.module.css';
 
+/** Footer de l'application */
 const Footer = () => {
 	const { isAuthenticated } = useAuth();
 

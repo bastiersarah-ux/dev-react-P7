@@ -9,13 +9,16 @@ import PageHeader from '../components/PageHeader';
 import TaskKanban from '../components/tasks/TaskKanban';
 import TaskList from '../components/tasks/TaskList';
 
+/** Type de vue du dashboard */
 type DashboardTabView = 'list' | 'kanban';
 
+/** Props du dashboard */
 type Props = {
 	tasks: Task[];
 	userName: string;
 };
 
+/** Page dashboard avec les tâches */
 export default function DashboardClient({ tasks, userName }: Props) {
 	const [currentTab, setCurrentTab] = useState<DashboardTabView>('list');
 
@@ -27,13 +30,9 @@ export default function DashboardClient({ tasks, userName }: Props) {
 		<main className='md:px-25 md:py-20 sm p-5 flex-1'>
 			<PageHeader title='Tableau de bord' subtitle={`Bonjour ${userName ?? ''}, voici un aperçu de vos projets et tâches`} />
 
-			<fieldset className='join gap-4 h-11.25 my-6'>
+			<fieldset className='join switcher-btn-container'>
 				<legend className='hidden'>Affichage</legend>
-				<label
-					htmlFor='tab-list'
-					className={`join-item rounded-lg px-3.5 py-4 h-full btn flex items-center text-(--color-warning-content) gap-2 ${
-						currentTab === 'list' ? 'bg-(--color-warning)' : ''
-					}`}>
+				<label htmlFor='tab-list' className={`join-item btn btn-joined ${currentTab === 'list' ? 'bg-(--color-warning)' : ''}`}>
 					<Image src={ListIcon} alt='Icône liste' className='w-4 h-4' />
 					Liste
 				</label>
@@ -47,11 +46,7 @@ export default function DashboardClient({ tasks, userName }: Props) {
 					className='hidden'
 				/>
 
-				<label
-					htmlFor='tab-kanban'
-					className={`join-item rounded-lg h-full px-3.5 py-4 btn flex items-center text-(--color-warning-content) gap-2 ${
-						currentTab === 'kanban' ? 'bg-(--color-warning) ' : ''
-					}`}>
+				<label htmlFor='tab-kanban' className={`join-item btn btn-joined ${currentTab === 'kanban' ? 'bg-(--color-warning) ' : ''}`}>
 					<Image src={KanbanIcon} alt='Icône Kanban' className='w-4 h-4' />
 					Kanban
 				</label>

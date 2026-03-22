@@ -6,8 +6,9 @@ import { updatePassword, updateProfile } from '@front/services/userService';
 import { useMemo, useState } from 'react';
 import styles from './Account.module.css';
 
+/** Formulaire de modification du compte */
 export default function AccountForm() {
-	const { user } = useAuth();
+	const { user, refreshUser } = useAuth();
 	const { showSuccess, showError } = useNotification();
 
 	const initialValues = useMemo(() => {
@@ -73,6 +74,9 @@ export default function AccountForm() {
 				setCurrentPassword('');
 				setNewPassword('');
 			}
+
+			// Rafraîchit les données utilisateur dans le contexte
+			await refreshUser();
 
 			showSuccess('Profil mis à jour avec succès');
 		} catch (error) {

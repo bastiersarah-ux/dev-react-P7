@@ -1,5 +1,6 @@
 'use client';
 
+/** Overlay du drawer mobile */
 export default function DrawerOverlay() {
 	const handleClose = () => {
 		const toggle = document.getElementById('drawer-toggle') as HTMLInputElement;

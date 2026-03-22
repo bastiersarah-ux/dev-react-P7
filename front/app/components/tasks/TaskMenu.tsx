@@ -10,11 +10,13 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
+/** Props du menu de tâche */
 type TaskMenuProps = {
 	task: Task;
 	projectId: string;
 };
 
+/** Menu dropdown pour modifier ou supprimer une tâche */
 export default function TaskMenu({ task, projectId }: TaskMenuProps) {
 	const dropdownRef = useRef<HTMLDetailsElement>(null);
 	const router = useRouter();

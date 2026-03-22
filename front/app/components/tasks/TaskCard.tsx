@@ -5,12 +5,15 @@ import CommentsIcon from '@front/public/icon-comments.svg';
 import ProjectsIcon from '@front/public/icon-projets.svg';
 import { Task } from '@front/types/api-types';
 import Image from 'next/image';
+import Link from 'next/link';
 import StatusBadge from './StatusBadge';
 
+/** Props de la carte tâche */
 type TaskCardProps = {
 	task: Task;
 };
 
+/** Carte affichant une tâche */
 export default function TaskCard({ task }: TaskCardProps) {
 	return (
 		<div className='border border-gray-200 rounded-lg p-4 flex flex-col flex-wrap gap-5 justify-between '>
@@ -44,7 +47,11 @@ export default function TaskCard({ task }: TaskCardProps) {
 					</div>
 				</div>
 
-				<button className='bg-black min-w-30 text-white px-6 py-3 rounded-[10px]'>Voir</button>
+				<Link
+					href={'/projects/' + task.projectId}
+					className='btn no-underline! bg-black min-w-30 text-white! px-6 py-6 font-normal rounded-[10px]'>
+					Voir
+				</Link>
 			</div>
 		</div>
 	);
